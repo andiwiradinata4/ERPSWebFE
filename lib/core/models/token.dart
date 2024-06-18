@@ -1,28 +1,59 @@
 import 'package:equatable/equatable.dart';
 
 class Token extends Equatable {
-  final int id;
-  final String accessToken, refreshToken;
-  final int expired;
+  final String userName;
+  final String email;
+  final String accessToken;
+  final DateTime validFrom, validTo;
+  final String refreshToken;
+  final String issuer;
+  final String audience;
+  final String code;
+
   const Token(
-      {required this.id,
-        required this.accessToken,
-        required this.refreshToken,
-        required this.expired});
+      {required this.userName,
+      required this.email,
+      required this.accessToken,
+      required this.validFrom,
+      required this.validTo,
+      required this.refreshToken,
+      required this.issuer,
+      required this.audience,
+      required this.code});
 
   factory Token.fromJson(Map<String, dynamic> json) => Token(
-      id: json['id'] ?? 0,
-      accessToken: json['access'] ?? '',
-      refreshToken: json['refresh'] ?? '',
-      expired: int.parse(json['expired']));
+      userName: json['UserName'] ?? '',
+      email: json['Email'] ?? '',
+      accessToken: json['AccessToken'] ?? '',
+      validFrom: json['ValidFrom'] ?? '',
+      validTo: json['ValidTo'] ?? '',
+      refreshToken: json['RefreshToken'] ?? '',
+      issuer: json['Issuer'] ?? '',
+      audience: json['Audience'] ?? '',
+      code: json['Code'] ?? '');
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "access": accessToken,
-    "refresh": refreshToken,
-    "expired": expired.toString()
-  };
+        "UserName": userName,
+        "Email": email,
+        "AccessToken": accessToken,
+        "ValidFrom": validFrom,
+        "ValidTo": validTo,
+        "RefreshToken": refreshToken,
+        "Issuer": issuer,
+        "Audience": audience,
+        "Code": code
+      };
 
   @override
-  List<Object?> get props => [id, accessToken, refreshToken, expired];
+  List<Object?> get props => [
+        userName,
+        email,
+        accessToken,
+        validFrom,
+        validTo,
+        refreshToken,
+        issuer,
+        audience,
+        code
+      ];
 }
