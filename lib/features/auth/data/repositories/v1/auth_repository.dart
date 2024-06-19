@@ -4,8 +4,12 @@ import 'package:erps/core/models/token.dart';
 import 'package:erps/core/network/http/abstract/abs_http_client.dart';
 import 'package:erps/core/network/http/http_status.dart';
 import 'package:erps/features/auth/data/models/user.dart';
+import 'package:erps/features/auth/domain/entities/v1/change_email_entity.dart';
+import 'package:erps/features/auth/domain/entities/v1/change_phone_number_entity.dart';
 import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
 import 'package:erps/features/auth/domain/entities/v1/register_entity.dart';
+import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
+import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
 import 'package:erps/features/auth/domain/repositories/v1/abs_auth_repository.dart';
 
 class AuthRepository implements AbsAuthRepository {
@@ -14,12 +18,11 @@ class AuthRepository implements AbsAuthRepository {
   AuthRepository({required this.client});
 
   @override
-  Future<Token> register(RegisterEntity register) async {
+  Future<Token> register(RegisterEntity data) async {
     final Token token;
     String url = '/api/v1/auth/register';
-    Map<String, dynamic> body = register.toJson();
     try {
-      final response = await client.post(url, body);
+      final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
         token = Token.fromJson(json);
@@ -33,12 +36,11 @@ class AuthRepository implements AbsAuthRepository {
   }
 
   @override
-  Future<Token> login(LoginEntity login) async {
+  Future<Token> login(LoginEntity data) async {
     final Token token;
     String url = '/api/v1/auth/login';
-    Map<String, dynamic> body = login.toJson();
     try {
-      final response = await client.post(url, body);
+      final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
         token = Token.fromJson(json);
@@ -88,10 +90,11 @@ class AuthRepository implements AbsAuthRepository {
   }
 
   @override
-  Future<bool> verifyEmailConfirmation(String token, String code) async {
+  Future<bool> verifyEmailConfirmation(
+      VerifyEmailConfirmationEntity result) async {
     String url = '/api/v1/auth/verify-email-confirmation-token';
     try {
-      final response = await client.post(url, {'Token': token, 'Code': code});
+      final response = await client.post(url, result.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
         return json['Success'] ?? false;
@@ -122,12 +125,10 @@ class AuthRepository implements AbsAuthRepository {
   }
 
   @override
-  Future<bool> changeEmail(
-      String email, String newEmail, String token, String code) async {
+  Future<bool> changeEmail(ChangeEmailEntity data) async {
     String url = '/api/v1/auth/change-email';
     try {
-      final response = await client.post(url,
-          {'Email': email, 'NewEmail': newEmail, 'Token': token, 'Code': code});
+      final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
         return json['Success'] ?? false;
@@ -159,16 +160,10 @@ class AuthRepository implements AbsAuthRepository {
   }
 
   @override
-  Future<bool> changePhoneNumber(String phoneNumber, String newPhoneNumber,
-      String token, String code) async {
+  Future<bool> changePhoneNumber(ChangePhoneNumberEntity data) async {
     String url = '/api/v1/auth/change-phone-number';
     try {
-      final response = await client.post(url, {
-        'PhoneNumber': phoneNumber,
-        'NewPhoneNumber': newPhoneNumber,
-        'Token': token,
-        'Code': code
-      });
+      final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
         return json['Success'] ?? false;
@@ -199,16 +194,10 @@ class AuthRepository implements AbsAuthRepository {
   }
 
   @override
-  Future<bool> resetPassword(
-      String email, String newPassword, String token, String code) async {
+  Future<bool> resetPassword(ResetPasswordEntity data) async {
     String url = '/api/v1/auth/reset-password';
     try {
-      final response = await client.post(url, {
-        'Email': email,
-        'NewPassword': newPassword,
-        'Token': token,
-        'Code': code
-      });
+      final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
         return json['Success'] ?? false;

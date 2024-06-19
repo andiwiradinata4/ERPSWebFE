@@ -7,12 +7,14 @@ import 'package:erps/features/auth/domain/entities/v1/register_entity.dart';
 import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
 import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
 
-abstract class AbsAuthRepository {
-  Future<Token> register(RegisterEntity data);
+abstract class AbsAuthService {
+  Future<User?> initAuthState();
 
-  Future<Token> login(LoginEntity data);
+  Future<bool> register(RegisterEntity data);
 
-  Future<Token> refreshToken();
+  Future<bool> login(LoginEntity data);
+
+  Future<bool> refreshToken();
 
   Future<Token> emailConfirmationToken();
 
