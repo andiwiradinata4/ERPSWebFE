@@ -16,7 +16,8 @@ class AuthService implements AbsAuthService {
   final AbsAuthLocalRepository localRepo;
   final AbsHttpClient client;
 
-  AuthService(this.repo, this.localRepo, this.client);
+  AuthService(
+      {required this.repo, required this.localRepo, required this.client});
 
   void setToken(Token token) async {
     setAccessToken(token);
@@ -70,25 +71,23 @@ class AuthService implements AbsAuthService {
   }
 
   @override
-  Future<bool> login(LoginEntity data) async {
+  Future<Token> login(LoginEntity data) async {
     Token token = await repo.login(data);
     if (token.accessToken != '') {
       await localRepo.store(token);
       setToken(token);
-      return true;
     }
-    return false;
+    return token;
   }
 
   @override
-  Future<bool> refreshToken() async {
+  Future<Token> refreshToken() async {
     Token data = await repo.refreshToken();
     if (data.accessToken != '') {
       await localRepo.store(data);
       setToken(data);
-      return true;
     }
-    return false;
+    return data;
   }
 
   @override
@@ -141,5 +140,10 @@ class AuthService implements AbsAuthService {
   @override
   Future<User> me() async {
     return await repo.me();
+  }
+
+  @override
+  deleteToken() {
+    localRepo.delete();
   }
 }

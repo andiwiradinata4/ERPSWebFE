@@ -19,7 +19,9 @@ class DateUtil {
 
   String format(String format, DateTime? data, {String locale = "EN"}) {
     if (data == null) return "";
-    return DateFormat(format, locale).format(data);
+    final dataReturn = data.toString();
+    return data.toString();
+    // return DateFormat(format, locale).format(data);
   }
 
   DateTime parse(String data) {

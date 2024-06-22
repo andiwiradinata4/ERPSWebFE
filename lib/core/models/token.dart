@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:erps/core/utils/date_util.dart';
 
 class Token extends Equatable {
   final String userName;
@@ -25,8 +26,8 @@ class Token extends Equatable {
       userName: json['UserName'] ?? '',
       email: json['Email'] ?? '',
       accessToken: json['AccessToken'] ?? '',
-      validFrom: json['ValidFrom'] ?? DateTime.utc(2000),
-      validTo: json['ValidTo'] ?? DateTime.utc(2000),
+      validFrom: DateUtil().parse(json['ValidFrom']) ?? DateTime.utc(2000),
+      validTo: DateUtil().parse(json['ValidTo']) ?? DateTime.utc(2000),
       refreshToken: json['RefreshToken'] ?? '',
       issuer: json['Issuer'] ?? '',
       audience: json['Audience'] ?? '',
@@ -36,8 +37,9 @@ class Token extends Equatable {
         "UserName": userName,
         "Email": email,
         "AccessToken": accessToken,
-        "ValidFrom": validFrom,
-        "ValidTo": validTo,
+        "ValidFrom":
+            validFrom.toString(),
+        "ValidTo": validTo.toString(),
         "RefreshToken": refreshToken,
         "Issuer": issuer,
         "Audience": audience,

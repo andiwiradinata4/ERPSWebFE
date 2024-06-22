@@ -1,3 +1,6 @@
+import 'package:erps/app/utils/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/init/cubit/app_init_cubit.dart';

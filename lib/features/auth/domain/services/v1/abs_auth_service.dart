@@ -10,11 +10,13 @@ import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_
 abstract class AbsAuthService {
   Future<User?> initAuthState();
 
+  deleteToken();
+
   Future<bool> register(RegisterEntity data);
 
-  Future<bool> login(LoginEntity data);
+  Future<Token> login(LoginEntity data);
 
-  Future<bool> refreshToken();
+  Future<Token> refreshToken();
 
   Future<Token> emailConfirmationToken();
 

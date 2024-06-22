@@ -25,7 +25,7 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        token = Token.fromJson(json);
+        token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -43,7 +43,8 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        token = Token.fromJson(json);
+        final data = json['Data'];
+        token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -61,7 +62,7 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.post(url, {});
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        token = Token.fromJson(json);
+        token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -79,7 +80,7 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.post(url, {});
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        token = Token.fromJson(json);
+        token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -114,7 +115,7 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.post(url, {'newEmail': newEmail});
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        token = Token.fromJson(json);
+        token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -149,7 +150,7 @@ class AuthRepository implements AbsAuthRepository {
           await client.post(url, {'NewPhoneNumber': newPhoneNumber});
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        token = Token.fromJson(json);
+        token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -183,7 +184,7 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.post(url, {'Email': email});
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        token = Token.fromJson(json);
+        token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -235,7 +236,7 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.get(url);
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        user = User.fromJson(json);
+        user = User.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }

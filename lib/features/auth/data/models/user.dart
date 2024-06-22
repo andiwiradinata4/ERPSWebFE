@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:erps/core/utils/date_util.dart';
 
 class User extends Equatable {
   final String id;
@@ -42,7 +43,7 @@ class User extends Equatable {
       id: json['Id'] ?? '',
       firstName: json['FirstName'] ?? '',
       lastName: json['LastName'] ?? '',
-      birthDate: json['BirthDate'] ?? DateTime.now(),
+      birthDate: DateUtil().parse(json['BirthDate']) ?? DateTime.now(),
       userName: json['UserName'] ?? '',
       normalizedUsername: json['NormalizedUsername'] ?? '',
       email: json['Email'] ?? '',
@@ -61,7 +62,7 @@ class User extends Equatable {
         'Id': id,
         'FirstName': firstName,
         'LastName': lastName,
-        'BirthDate': birthDate,
+        'BirthDate': birthDate.toString(),
         'UserName': userName,
         'NormalizedUsername': normalizedUsername,
         'Email': email,
