@@ -37,8 +37,7 @@ void myRunApp() async {
   // setUrlStrategy(PathUrlStrategy());
 
   AppInitCubit appInitCubit = AppInitCubit();
-  AuthCubit authCubit =
-      (GetIt.I.get(instanceName: InjectorDependencyName.authService));
+  AuthCubit authCubit = AuthCubit();
 
   /// First Init Dependency and All Config
   await init(appInitCubit, authCubit);
