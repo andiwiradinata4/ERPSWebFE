@@ -1,5 +1,6 @@
 import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/wrapper.dart';
+import 'package:erps/features/auth/presentation/pages/v1/forget_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/login_page.dart';
 import 'package:erps/features/home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final List<RouteBase> routerList = [];
-final anonymous = ['/login', '/forgot-password'];
+final anonymous = ['/login', '/forget-password'];
 
 /// RoutePath
 const String routePathHomePage = '/';
@@ -71,14 +72,21 @@ void populateRoutes(
         );
       }));
 
+  routerList.add(GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (context, state) {
+        return LoginPage(
+          redirectTo: state.uri.queryParameters['redirect'] ?? '',
+        );
+      }));
+
   routerList.add(
     GoRoute(
-        path: '/login',
-        name: 'login',
+        path: '/forget-password',
+        name: 'forget-password',
         builder: (context, state) {
-          return LoginPage(
-            redirectTo: state.uri.queryParameters['redirect'] ?? '',
-          );
+          return const ForgetPasswordPage();
         }),
   );
 }

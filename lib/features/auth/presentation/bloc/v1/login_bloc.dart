@@ -55,4 +55,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginErrorState(message: e.toString()));
     }
   }
+
+  void _onForgetPasswordEvent(MeEvent event, Emitter<LoginState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      User user = await _service.me();
+      emit(SuccessGetDetailState(user));
+    } on ErrorResponseException catch (e) {
+      emit(LoginErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString()));
+    }
+  }
 }
