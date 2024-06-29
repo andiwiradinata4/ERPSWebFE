@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/login_bloc.dart';
+import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -41,26 +43,26 @@ class _DesktopState extends State<Desktop> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
 
-  late LoginBloc _loginBloc;
+  late AuthBloc _authBloc;
 
   @override
   void initState() {
     super.initState();
 
-    /// Get Login Bloc
-    _loginBloc = context.read<LoginBloc>();
+    /// Get Auth Bloc
+    _authBloc = context.read<AuthBloc>();
   }
 
   void fForgetPasswordToken() {
     if (formKey.currentState!.validate()) {
-      _loginBloc
+      _authBloc
           .add(ForgetPasswordTokenEvent(email: emailController.text.trim()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
         listenWhen: (previousState, state) {
           if (previousState is LoginLoadingState) {
             UsDialogBuilder.dispose();
@@ -75,7 +77,8 @@ class _DesktopState extends State<Desktop> {
           } else if (state is LoginLoadingState) {
             Future.delayed(Duration.zero,
                 () => UsDialogBuilder.loadLoadingDialog(context));
-          } else if (state is LoginSuccessState) {
+          } else if (state is ForgetPasswordTokenState) {
+            log("${state.token.accessToken} - ${state.token.code}" );
           } else if (state is SuccessGetDetailState) {
             // _authCubit.setAsAuthenticated(state.user);
             // if (widget.redirectTo.isNotEmpty) {
@@ -89,26 +92,29 @@ class _DesktopState extends State<Desktop> {
           child: Form(
             key: formKey,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: SizeConfig.screenWidth * 0.5,
+                  width: SizeConfig.screenWidth * 0.8,
                   height: SizeConfig.screenHeight,
-                  color: Theme.of(context).primaryColor.withOpacity(0.8),
-                ),
-                Container(
-                  width: SizeConfig.screenWidth * 0.5,
                   padding: EdgeInsets.symmetric(
                       horizontal: SizeConfig.screenWidth * 0.1),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      /// Spacer
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.2,
+                      ),
+
                       /// Header Text
                       const Text(
                         'Lupa Password',
                         style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w600,
                             height: 1.5),
                       ),
 
@@ -116,8 +122,8 @@ class _DesktopState extends State<Desktop> {
                       const Text(
                         'Silahkan Masukkan Email Anda',
                         style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                             height: 1.5),
                       ),
 
@@ -127,51 +133,62 @@ class _DesktopState extends State<Desktop> {
                       ),
 
                       /// Email
-                      UsTextFormField(
-                        fieldName: 'Email',
-                        usController: emailController,
-                        textInputType: TextInputType.emailAddress,
-                        validateValue: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Masukan email terlebih dahulu';
-                          }
+                      SizedBox(
+                        width: SizeConfig.screenWidth * 0.4,
+                        child: UsTextFormField(
+                          fieldName: 'Email',
+                          usController: emailController,
+                          textInputType: TextInputType.emailAddress,
+                          validateValue: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan email terlebih dahulu';
+                            }
 
-                          return null;
-                        },
+                            return null;
+                          },
+                        ),
                       ),
 
                       const SizedBox(
                         height: 30,
                       ),
 
-                      /// Next Button
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SizedBox(
-                          width: SizeConfig.screenWidth,
-                          child: ElevatedButton(
-                              onPressed: fForgetPasswordToken,
-                              child: const Text(
-                                'Lanjut',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w800),
-                              )),
-                        ),
-                      ),
+                      SizedBox(
+                        width: SizeConfig.screenWidth * 0.4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            /// Next Button
+                            SizedBox(
+                              width: SizeConfig.screenWidth * 0.19,
+                              child: ElevatedButton(
+                                  onPressed: fForgetPasswordToken,
+                                  child: const Text(
+                                    'Lanjut',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800),
+                                  )),
+                            ),
 
-                      const SizedBox(height: 10),
+                            /// Spacer
+                            SizedBox(
+                              width: SizeConfig.screenWidth * 0.02,
+                            ),
 
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SizedBox(
-                          width: SizeConfig.screenWidth,
-                          child: OutlinedButton(
-                              onPressed: () => GoRouter.of(context).go('/login'),
-                              child: const Text(
-                                'Kembali',
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w800),
-                              )),
+                            SizedBox(
+                              width: SizeConfig.screenWidth * 0.19,
+                              child: OutlinedButton(
+                                  onPressed: () =>
+                                      GoRouter.of(context).go('/login'),
+                                  child: const Text(
+                                    'Kembali',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800),
+                                  )),
+                            )
+                          ],
                         ),
                       ),
 
@@ -198,14 +215,14 @@ class _MobileState extends State<Mobile> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
 
-  late LoginBloc _loginBloc;
+  late AuthBloc _loginBloc;
 
   @override
   void initState() {
     super.initState();
 
     /// Get Login Bloc
-    _loginBloc = context.read<LoginBloc>();
+    _loginBloc = context.read<AuthBloc>();
   }
 
   void fLogin() {
@@ -217,7 +234,7 @@ class _MobileState extends State<Mobile> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
         listenWhen: (previousState, state) {
           if (previousState is LoginLoadingState) {
             UsDialogBuilder.dispose();
@@ -326,7 +343,8 @@ class _MobileState extends State<Mobile> {
                         child: SizedBox(
                           width: SizeConfig.screenWidth,
                           child: OutlinedButton(
-                              onPressed: () => GoRouter.of(context).go('/login'),
+                              onPressed: () =>
+                                  GoRouter.of(context).go('/login'),
                               child: const Text(
                                 'Kembali',
                                 style: TextStyle(

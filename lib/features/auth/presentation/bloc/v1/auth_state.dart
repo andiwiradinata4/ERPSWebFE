@@ -1,21 +1,21 @@
-part of 'login_bloc.dart';
+part of 'auth_bloc.dart';
 
-abstract class LoginState extends Equatable {
+abstract class AuthState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class LoginUninitializedState extends LoginState {
+class LoginUninitializedState extends AuthState {
   @override
   List<Object?> get props => [];
 }
 
-class LoginLoadingState extends LoginState {
+class LoginLoadingState extends AuthState {
   @override
   List<Object?> get props => [];
 }
 
-class LoginSuccessState extends LoginState {
+class LoginSuccessState extends AuthState {
   final Token token;
 
   LoginSuccessState(this.token);
@@ -24,7 +24,7 @@ class LoginSuccessState extends LoginState {
   List<Object?> get props => [token];
 }
 
-class SuccessGetDetailState extends LoginState {
+class SuccessGetDetailState extends AuthState {
   final User user;
 
   SuccessGetDetailState(this.user);
@@ -33,7 +33,7 @@ class SuccessGetDetailState extends LoginState {
   List<Object?> get props => [user];
 }
 
-class LoginErrorState extends LoginState {
+class LoginErrorState extends AuthState {
   final int statusCode;
   final String message;
 
@@ -41,4 +41,13 @@ class LoginErrorState extends LoginState {
 
   @override
   List<Object?> get props => [statusCode, message];
+}
+
+class ForgetPasswordTokenState extends AuthState {
+  final Token token;
+
+  ForgetPasswordTokenState(this.token);
+
+  @override
+  List<Object?> get props => [token];
 }

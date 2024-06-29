@@ -6,19 +6,20 @@ import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
 import 'package:erps/features/auth/domain/services/v1/abs_auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'login_event.dart';
+part 'auth_event.dart';
 
-part 'login_state.dart';
+part 'auth_state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class AuthBloc extends Bloc<LoginEvent, AuthState> {
   final AbsAuthService _service;
 
-  LoginBloc(this._service) : super(LoginUninitializedState()) {
+  AuthBloc(this._service) : super(LoginUninitializedState()) {
     on<LoginAuthEvent>(_onLoginAuthEvent);
     on<MeEvent>(_onMeEvent);
+    on<ForgetPasswordTokenEvent>(_onForgetPasswordEvent);
   }
 
-  void _onLoginAuthEvent(LoginAuthEvent event, Emitter<LoginState> emit) async {
+  void _onLoginAuthEvent(LoginAuthEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
       Token token = await _service
@@ -39,7 +40,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  void _onMeEvent(MeEvent event, Emitter<LoginState> emit) async {
+  void _onMeEvent(MeEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
       User user = await _service.me();
@@ -56,11 +57,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  void _onForgetPasswordEvent(MeEvent event, Emitter<LoginState> emit) async {
+  void _onForgetPasswordEvent(ForgetPasswordTokenEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
-      User user = await _service.me();
-      emit(SuccessGetDetailState(user));
+      Token token = await _service.resetPasswordToken(event.email);
+      emit(ForgetPasswordTokenState(token));
     } on ErrorResponseException catch (e) {
       emit(LoginErrorState(
           statusCode: e.statusCode,

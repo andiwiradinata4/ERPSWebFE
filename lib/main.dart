@@ -3,7 +3,7 @@ import 'package:erps/app/init/app_init.dart';
 import 'package:erps/app/init/cubit/app_init_cubit.dart';
 import 'package:erps/app/utils/themes/light_theme.dart';
 import 'package:erps/core/config/injector_dependency_name.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/login_bloc.dart';
+import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
 import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,8 +42,8 @@ void myRunApp() async {
   /// First Init Dependency and All Config
   await init(appInitCubit, authCubit);
 
-  final LoginBloc loginBloc =
-      LoginBloc(GetIt.I.get(instanceName: InjectorDependencyName.authService));
+  final AuthBloc loginBloc =
+      AuthBloc(GetIt.I.get(instanceName: InjectorDependencyName.authService));
   // final AccessBloc accessBloc = AccessBloc(
   //     GetIt.I.get(instanceName: InjectorDependencyName.masterService));
 

@@ -1,4 +1,4 @@
-part of 'login_bloc.dart';
+part of 'auth_bloc.dart';
 
 abstract class LoginEvent extends Equatable {
   @override

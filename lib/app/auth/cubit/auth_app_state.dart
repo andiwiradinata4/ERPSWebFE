@@ -1,15 +1,15 @@
 part of 'auth_cubit.dart';
 
-abstract class AuthState extends Equatable {
-  const AuthState();
+abstract class AuthAppState extends Equatable {
+  const AuthAppState();
 }
 
-class Anonymous extends AuthState {
+class Anonymous extends AuthAppState {
   @override
   List<Object> get props => [];
 }
 
-class Authenticated extends AuthState {
+class Authenticated extends AuthAppState {
   final User user;
 
   const Authenticated(this.user);

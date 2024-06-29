@@ -4,7 +4,7 @@ import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/login_bloc.dart';
+import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -53,7 +53,7 @@ class _DesktopState extends State<Desktop> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  late LoginBloc _loginBloc;
+  late AuthBloc _authBloc;
   late AuthCubit _authCubit;
 
   @override
@@ -61,7 +61,7 @@ class _DesktopState extends State<Desktop> {
     super.initState();
 
     /// Get Login Bloc
-    _loginBloc = context.read<LoginBloc>();
+    _authBloc = context.read<AuthBloc>();
 
     /// Get Auth Cubit
     _authCubit = context.read<AuthCubit>();
@@ -69,7 +69,7 @@ class _DesktopState extends State<Desktop> {
 
   void fLogin() {
     if (formKey.currentState!.validate()) {
-      _loginBloc.add(LoginAuthEvent(
+      _authBloc.add(LoginAuthEvent(
           username: usernameController.text.trim(),
           password: passwordController.text.trim()));
     }
@@ -77,7 +77,7 @@ class _DesktopState extends State<Desktop> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
         listenWhen: (previousState, state) {
           if (previousState is LoginLoadingState) {
             UsDialogBuilder.dispose();
@@ -242,7 +242,7 @@ class _MobileState extends State<Mobile> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  late LoginBloc _loginBloc;
+  late AuthBloc _loginBloc;
   late AuthCubit _authCubit;
 
   @override
@@ -250,7 +250,7 @@ class _MobileState extends State<Mobile> {
     super.initState();
 
     /// Get Login Bloc
-    _loginBloc = context.read<LoginBloc>();
+    _loginBloc = context.read<AuthBloc>();
 
     /// Get Auth Cubit
     _authCubit = context.read<AuthCubit>();
@@ -268,7 +268,7 @@ class _MobileState extends State<Mobile> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
         listenWhen: (previousState, state) {
           if (previousState is LoginLoadingState) {
             UsDialogBuilder.dispose();
