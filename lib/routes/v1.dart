@@ -1,6 +1,7 @@
 import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/wrapper.dart';
 import 'package:erps/features/auth/presentation/pages/v1/forget_password_page.dart';
+import 'package:erps/features/auth/presentation/pages/v1/forget_password_verify_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/login_page.dart';
 import 'package:erps/features/home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final List<RouteBase> routerList = [];
-final anonymous = ['/login', '/forget-password'];
+final anonymous = ['/login', '/forget-password', '/forget-password-verify'];
 
 /// RoutePath
 const String routePathHomePage = '/';
@@ -73,13 +74,22 @@ void populateRoutes(
       }));
 
   routerList.add(GoRoute(
-      path: '/login',
-      name: 'login',
-      builder: (context, state) {
-        return LoginPage(
-          redirectTo: state.uri.queryParameters['redirect'] ?? '',
-        );
-      }));
+    path: '/login',
+    name: 'login',
+    builder: (context, state) {
+      return LoginPage(
+        redirectTo: state.uri.queryParameters['redirect'] ?? '',
+      );
+    },
+    // routes: [
+    //   GoRoute(
+    //       path: 'forget-password',
+    //       name: 'forget-password',
+    //       builder: (context, state) {
+    //         return const ForgetPasswordPage();
+    //       }),
+    // ])
+  ));
 
   routerList.add(
     GoRoute(
@@ -87,6 +97,25 @@ void populateRoutes(
         name: 'forget-password',
         builder: (context, state) {
           return const ForgetPasswordPage();
+        }),
+  );
+
+  routerList.add(
+    GoRoute(
+        path: '/forget-password-verify',
+        name: 'forget-password-verify',
+        builder: (context, state) {
+          String accessToken = '';
+          Object? extra = state.extra;
+          if (extra != null) {
+            if (extra is Map<String, String>) {
+              accessToken = extra['accessToken'] ?? '';
+            }
+          }
+
+          return ForgetPasswordVerifyPage(
+            tokenValue: accessToken,
+          );
         }),
   );
 }
