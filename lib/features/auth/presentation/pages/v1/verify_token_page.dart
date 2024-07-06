@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
@@ -10,30 +8,63 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class ForgetPasswordPage extends StatefulWidget {
-  const ForgetPasswordPage({super.key});
+/// PROCESS : RESET_PASSWORD | CHANGE_PASSWORD | CHANGE_PHONE_NUMBER
+
+class VerifyTokenPage extends StatefulWidget {
+  final String process;
+  final String references;
+  final String accessToken;
+  final String code;
+
+  const VerifyTokenPage(
+      {super.key,
+      required this.process,
+      required this.references,
+      required this.accessToken,
+      required this.code});
 
   @override
-  State<ForgetPasswordPage> createState() => _ForgetPasswordPageState();
+  State<VerifyTokenPage> createState() => _VerifyTokenPageState();
 }
 
-class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
+class _VerifyTokenPageState extends State<VerifyTokenPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return const Scaffold(
-      // appBar: AppBar(),
+    return Scaffold(
       body: Responsive(
-        desktop: Default(),
-        mobile: Default(),
-        tablet: Default(),
+        desktop: Default(
+            process: widget.process,
+            references: widget.references,
+            accessToken: widget.accessToken,
+            code: widget.code),
+        mobile: Default(
+            process: widget.process,
+            references: widget.references,
+            accessToken: widget.accessToken,
+            code: widget.code),
+        tablet: Default(
+            process: widget.process,
+            references: widget.references,
+            accessToken: widget.accessToken,
+            code: widget.code),
       ),
     );
   }
 }
 
 class Default extends StatefulWidget {
-  const Default({super.key});
+  final String process;
+  final String references;
+  final String accessToken;
+  final String code;
+
+  const Default(
+      {super.key,
+      required this.process,
+      required this.references,
+      required this.accessToken,
+      required this.code});
 
   @override
   State<Default> createState() => _DefaultState();
@@ -41,7 +72,7 @@ class Default extends StatefulWidget {
 
 class _DefaultState extends State<Default> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
 
   late AuthBloc _authBloc;
 
@@ -53,14 +84,14 @@ class _DefaultState extends State<Default> {
     _authBloc = context.read<AuthBloc>();
   }
 
-  void fForgetPasswordToken() {
+  void fVerify() {
     if (formKey.currentState!.validate()) {
       _authBloc
-          .add(ForgetPasswordTokenEvent(email: emailController.text.trim()));
+          .add(ForgetPasswordTokenEvent(email: codeController.text.trim()));
     }
   }
 
-  void fBack() => GoRouter.of(context).pushReplacementNamed('login');
+  void fBack() => GoRouter.of(context).goNamed('forget-password');
 
   @override
   Widget build(BuildContext context) {
@@ -76,27 +107,21 @@ class _DefaultState extends State<Default> {
             Future.delayed(Duration.zero, () {
               UsSnackBarBuilder.showErrorSnackBar(context, state.message);
             });
-          } else if (state is LoginLoadingState) {
-            Future.delayed(Duration.zero,
-                () => UsDialogBuilder.loadLoadingDialog(context));
-          } else if (state is ForgetPasswordTokenState) {
-            log("${state.token.accessToken} - ${state.token.code}");
-            Future.delayed(
-                Duration.zero,
-                () => GoRouter.of(context)
-                        .goNamed('forget-password-verify', extra: {
-                      'process': 'RESET_PASSWORD',
-                      'references': emailController.text.trim(),
-                      'accessToken': state.token.accessToken,
-                      'code': state.token.code
-                    }));
+          } else if (state is SuccessGetDetailState) {
+            // _authCubit.setAsAuthenticated(state.user);
+            // if (widget.redirectTo.isNotEmpty) {
+            //   GoRouter.of(context).pushReplacement(widget.redirectTo);
+            // } else {
+            //   GoRouter.of(context).pushReplacementNamed('home');
+            // }
           }
         }),
         child: SingleChildScrollView(
           child: Form(
             key: formKey,
-            child:
-                (Responsive.isMobile(context)) ? mobileView() : desktopView(),
+            child: (Responsive.isMobile(context))
+                ? mobileView()
+                : desktopView(widget.references),
           ),
         ));
   }
@@ -140,7 +165,7 @@ class _DefaultState extends State<Default> {
                 /// Email
                 UsTextFormField(
                   fieldName: 'Email',
-                  usController: emailController,
+                  usController: codeController,
                   textInputType: TextInputType.emailAddress,
                   validateValue: (String? value) {
                     if (value == null || value.isEmpty) {
@@ -162,7 +187,7 @@ class _DefaultState extends State<Default> {
                   child: SizedBox(
                     width: SizeConfig.screenWidth,
                     child: ElevatedButton(
-                        onPressed: fForgetPasswordToken,
+                        onPressed: fVerify,
                         child: const Text(
                           'Lanjut',
                           style: TextStyle(
@@ -192,18 +217,19 @@ class _DefaultState extends State<Default> {
         ],
       );
 
-  Row desktopView() => Row(
+  Row desktopView(String references) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: SizeConfig.screenWidth * 0.8,
+            width: SizeConfig.screenWidth,
             height: SizeConfig.screenHeight,
+            alignment: Alignment.center,
             padding:
-                EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.1),
+                EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.05),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Spacer
                 SizedBox(
@@ -212,33 +238,47 @@ class _DefaultState extends State<Default> {
 
                 /// Header Text
                 const Text(
-                  'Lupa Password',
+                  'Verifikasi',
                   style: TextStyle(
                       fontSize: 40, fontWeight: FontWeight.w600, height: 1.5),
                 ),
 
-                /// Welcome Text
-                const Text(
-                  'Silahkan Masukkan Email Anda',
-                  style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w600, height: 1.5),
+                /// Spacer
+                const SizedBox(
+                  height: 30,
+                ),
+
+                /// Body
+                RichText(
+                  textAlign: TextAlign.start,
+                  text: TextSpan(
+                    text: 'Masukan kode verifikasi yang telah dikirim ke ',
+                    style: DefaultTextStyle.of(context)
+                        .style
+                        .copyWith(fontSize: 20, height: 1.5),
+                    children: [
+                      TextSpan(
+                          text: references,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
                 ),
 
                 /// Spacer
                 const SizedBox(
-                  height: 50,
+                  height: 18,
                 ),
 
-                /// Email
+                /// Code
                 SizedBox(
-                  width: SizeConfig.screenWidth * 0.4,
+                  width: SizeConfig.screenWidth * 0.3,
                   child: UsTextFormField(
-                    fieldName: 'Email',
-                    usController: emailController,
-                    textInputType: TextInputType.emailAddress,
+                    fieldName: 'Kode Verifikasi',
+                    usController: codeController,
+                    textInputType: TextInputType.text,
                     validateValue: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Masukan email terlebih dahulu';
+                        return 'Masukan kode verifikasi terlebih dahulu';
                       }
 
                       return null;
@@ -251,15 +291,15 @@ class _DefaultState extends State<Default> {
                 ),
 
                 SizedBox(
-                  width: SizeConfig.screenWidth * 0.4,
+                  width: SizeConfig.screenWidth * 0.3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       /// Next Button
                       SizedBox(
-                        width: SizeConfig.screenWidth * 0.19,
+                        width: SizeConfig.screenWidth * 0.14,
                         child: ElevatedButton(
-                            onPressed: fForgetPasswordToken,
+                            onPressed: fVerify,
                             child: const Text(
                               'Lanjut',
                               style: TextStyle(
@@ -273,7 +313,7 @@ class _DefaultState extends State<Default> {
                       ),
 
                       SizedBox(
-                        width: SizeConfig.screenWidth * 0.19,
+                        width: SizeConfig.screenWidth * 0.14,
                         child: OutlinedButton(
                             onPressed: fBack,
                             child: const Text(

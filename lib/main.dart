@@ -8,8 +8,13 @@ import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 
 void main() {
+  html.window.onBeforeUnload.listen((event) {
+    event.preventDefault();
+  });
   myRunApp();
   // runApp(const MyApp());
 }
