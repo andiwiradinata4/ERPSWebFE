@@ -43,7 +43,6 @@ class AuthRepository implements AbsAuthRepository {
       final response = await client.post(url, data.toJson());
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        final data = json['Data'];
         token = Token.fromJson(json['Data']);
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));

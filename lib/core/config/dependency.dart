@@ -19,7 +19,7 @@ class Dependency {
     /// client
     String? apiHost = Config.getString("API_HOST") ;
     var httpRestClient = HttpClient(
-        host: Config.getString("API_HOST") ?? "",
+        host: apiHost ?? "",
         apiKey: "",
         client: http.Client());
     var secureLocalStoreClient = SecureLocalStoreClient();

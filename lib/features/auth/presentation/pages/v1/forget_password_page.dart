@@ -105,88 +105,105 @@ class _DefaultState extends State<Default> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: SizeConfig.screenWidth * 0.9,
-            height: SizeConfig.screenHeight * 0.9,
+            width: SizeConfig.screenWidth,
             padding:
                 EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.1),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                /// Spacer
-                const SizedBox(
-                  height: 10,
-                ),
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      /// Spacer
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.3,
+                      ),
 
-                /// Header Text
-                const Text(
-                  'Lupa Password',
-                  style: TextStyle(
-                      fontSize: 28, fontWeight: FontWeight.w700, height: 1.5),
-                ),
+                      /// Header Text
+                      const Text(
+                        'Lupa Password',
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            height: 1.5),
+                      ),
 
-                /// Welcome Text
-                const Text(
-                  'Silahkan Masukkan Email Anda',
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500, height: 1.5),
-                ),
+                      /// Welcome Text
+                      const Text(
+                        'Silahkan Masukkan Email Anda',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5),
+                      ),
 
-                /// Spacer
-                const SizedBox(
-                  height: 25,
-                ),
+                      /// Spacer
+                      const SizedBox(
+                        height: 25,
+                      ),
 
-                /// Email
-                UsTextFormField(
-                  fieldName: 'Email',
-                  usController: emailController,
-                  textInputType: TextInputType.emailAddress,
-                  validateValue: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan email terlebih dahulu';
-                    }
+                      /// Email
+                      UsTextFormField(
+                        fieldName: 'Email',
+                        usController: emailController,
+                        textInputType: TextInputType.emailAddress,
+                        validateValue: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukan email terlebih dahulu';
+                          }
 
-                    return null;
-                  },
-                ),
+                          return null;
+                        },
+                      ),
 
-                /// Spacer
-                const SizedBox(
-                  height: 15,
-                ),
-
-                /// Next Button
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: SizeConfig.screenWidth,
-                    child: ElevatedButton(
-                        onPressed: fForgetPasswordToken,
-                        child: const Text(
-                          'Lanjut',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w800),
-                        )),
+                      /// Spacer
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ],
                   ),
-                ),
 
-                const SizedBox(height: 10),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: SizeConfig.screenHeight * 0.8),
+                    child: Column(
+                      children: [
+                        /// Next Button
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                            width: SizeConfig.screenWidth,
+                            child: ElevatedButton(
+                                onPressed: fForgetPasswordToken,
+                                child: const Text(
+                                  'Lanjut',
+                                  style: TextStyle(
+                                      fontSize: 15, fontWeight: FontWeight.w800),
+                                )),
+                          ),
+                        ),
 
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: SizeConfig.screenWidth,
-                    child: OutlinedButton(
-                        onPressed: fBack,
-                        child: const Text(
-                          'Kembali',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w800),
-                        )),
-                  ),
-                ),
-              ],
+                        const SizedBox(height: 10),
+
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                            width: SizeConfig.screenWidth,
+                            child: OutlinedButton(
+                                onPressed: fBack,
+                                child: const Text(
+                                  'Kembali',
+                                  style: TextStyle(
+                                      fontSize: 15, fontWeight: FontWeight.w800),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],

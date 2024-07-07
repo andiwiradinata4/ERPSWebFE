@@ -86,6 +86,14 @@ class _DefaultState extends State<Default> {
 
   void fVerify() {
     if (formKey.currentState!.validate()) {
+      if (widget.code == codeController.text.trim()) {
+        Future.delayed(Duration.zero, () {
+          UsSnackBarBuilder.showErrorSnackBar(
+              context, 'Kode verifikasi tidak valid!');
+        });
+        return;
+      }
+
       _authBloc
           .add(ForgetPasswordTokenEvent(email: codeController.text.trim()));
     }
@@ -120,98 +128,128 @@ class _DefaultState extends State<Default> {
           child: Form(
             key: formKey,
             child: (Responsive.isMobile(context))
-                ? mobileView()
+                ? mobileView(widget.references)
                 : desktopView(widget.references),
           ),
         ));
   }
 
-  Row mobileView() => Row(
+  Row mobileView(String references) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             width: SizeConfig.screenWidth * 0.9,
-            height: SizeConfig.screenHeight * 0.9,
+            height: SizeConfig.screenHeight,
             padding:
                 EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.1),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                /// Spacer
-                const SizedBox(
-                  height: 10,
-                ),
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      /// Spacer
+                      SizedBox(
+                        height: SizeConfig.screenHeight * 0.3,
+                      ),
 
-                /// Header Text
-                const Text(
-                  'Lupa Password',
-                  style: TextStyle(
-                      fontSize: 28, fontWeight: FontWeight.w700, height: 1.5),
-                ),
+                      /// Header Text
+                      const Text(
+                        'Verifikasi',
+                        style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            height: 1.5),
+                      ),
 
-                /// Welcome Text
-                const Text(
-                  'Silahkan Masukkan Email Anda',
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500, height: 1.5),
-                ),
+                      /// Body
+                      RichText(
+                        textAlign: TextAlign.start,
+                        text: TextSpan(
+                          text:
+                              'Masukan kode verifikasi yang telah dikirim ke ',
+                          style: DefaultTextStyle.of(context)
+                              .style
+                              .copyWith(fontSize: 16, height: 1.5),
+                          children: [
+                            TextSpan(
+                                text: references,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
 
-                /// Spacer
-                const SizedBox(
-                  height: 25,
-                ),
+                      /// Spacer
+                      const SizedBox(
+                        height: 25,
+                      ),
 
-                /// Email
-                UsTextFormField(
-                  fieldName: 'Email',
-                  usController: codeController,
-                  textInputType: TextInputType.emailAddress,
-                  validateValue: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan email terlebih dahulu';
-                    }
+                      /// Code
+                      SizedBox(
+                        child: UsTextFormField(
+                          fieldName: 'Kode Verifikasi',
+                          usController: codeController,
+                          textInputType: TextInputType.number,
+                          validateValue: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan kode verifikasi terlebih dahulu';
+                            }
 
-                    return null;
-                  },
-                ),
+                            return null;
+                          },
+                        ),
+                      ),
 
-                /// Spacer
-                const SizedBox(
-                  height: 15,
-                ),
-
-                /// Next Button
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: SizeConfig.screenWidth,
-                    child: ElevatedButton(
-                        onPressed: fVerify,
-                        child: const Text(
-                          'Lanjut',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w800),
-                        )),
+                      /// Spacer
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ],
                   ),
-                ),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(top: SizeConfig.screenHeight * 0.8),
+                    child: Column(
+                      children: [
+                        /// Next Button
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                            width: SizeConfig.screenWidth,
+                            child: ElevatedButton(
+                                onPressed: fVerify,
+                                child: const Text(
+                                  'Lanjut',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800),
+                                )),
+                          ),
+                        ),
 
-                const SizedBox(height: 10),
+                        const SizedBox(height: 10),
 
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: SizeConfig.screenWidth,
-                    child: OutlinedButton(
-                        onPressed: fBack,
-                        child: const Text(
-                          'Kembali',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w800),
-                        )),
-                  ),
-                ),
-              ],
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                            width: SizeConfig.screenWidth,
+                            child: OutlinedButton(
+                                onPressed: fBack,
+                                child: const Text(
+                                  'Kembali',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],
@@ -275,7 +313,7 @@ class _DefaultState extends State<Default> {
                   child: UsTextFormField(
                     fieldName: 'Kode Verifikasi',
                     usController: codeController,
-                    textInputType: TextInputType.text,
+                    textInputType: TextInputType.number,
                     validateValue: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Masukan kode verifikasi terlebih dahulu';

@@ -1,7 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:intl/intl.dart';
-
 class DateUtil {
   static const String QUERY_DATE_FORMAT = "dd-MM-yyyy";
   static const String QUERY_DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
@@ -19,7 +17,6 @@ class DateUtil {
 
   String format(String format, DateTime? data, {String locale = "EN"}) {
     if (data == null) return "";
-    final dataReturn = data.toString();
     return data.toString();
     // return DateFormat(format, locale).format(data);
   }

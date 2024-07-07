@@ -117,8 +117,8 @@ class _DefaultState extends State<Default> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: SizeConfig.screenWidth * 0.9,
-            height: SizeConfig.screenHeight,
+            width: SizeConfig.screenWidth,
+            // height: SizeConfig.screenHeight,
             padding:
                 EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.1),
             child: SingleChildScrollView(
@@ -191,7 +191,7 @@ class _DefaultState extends State<Default> {
                             },
                             useSuffixIcon: true,
                             activeSuffixIcon: Icons.visibility_outlined,
-                            deactiveSuffixIcon: Icons.visibility_off_outlined,
+                            deActiveSuffixIcon: Icons.visibility_off_outlined,
                             isPasswordHandle: true,
                           ),
 
@@ -219,8 +219,8 @@ class _DefaultState extends State<Default> {
 
                   /// Login Button
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: SizeConfig.screenHeight * 0.8),
+                    padding:
+                        EdgeInsets.only(top: SizeConfig.screenHeight * 0.8),
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: SizedBox(
@@ -309,7 +309,7 @@ class _DefaultState extends State<Default> {
                   },
                   useSuffixIcon: true,
                   activeSuffixIcon: Icons.visibility_outlined,
-                  deactiveSuffixIcon: Icons.visibility_off_outlined,
+                  deActiveSuffixIcon: Icons.visibility_off_outlined,
                   isPasswordHandle: true,
                 ),
 

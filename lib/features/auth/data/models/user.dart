@@ -43,7 +43,7 @@ class User extends Equatable {
       id: json['Id'] ?? '',
       firstName: json['FirstName'] ?? '',
       lastName: json['LastName'] ?? '',
-      birthDate: DateUtil().parse(json['BirthDate']) ?? DateTime.now(),
+      birthDate: (json['BirthDate'] == null) ? DateTime.utc(2000) : DateUtil().parse(json['BirthDate']),
       userName: json['UserName'] ?? '',
       normalizedUsername: json['NormalizedUsername'] ?? '',
       email: json['Email'] ?? '',

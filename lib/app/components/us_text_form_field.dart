@@ -8,7 +8,7 @@ class UsTextFormField extends StatefulWidget {
   final bool readOnly;
   final bool useSuffixIcon;
   final IconData? activeSuffixIcon;
-  final IconData? deactiveSuffixIcon;
+  final IconData? deActiveSuffixIcon;
   final bool isPasswordHandle;
   final String hintText;
   final bool autoFocus;
@@ -22,7 +22,7 @@ class UsTextFormField extends StatefulWidget {
         this.readOnly = false,
         this.useSuffixIcon = false,
         this.activeSuffixIcon,
-        this.deactiveSuffixIcon,
+        this.deActiveSuffixIcon,
         this.isPasswordHandle = false,
         this.hintText = '',
         this.autoFocus = false});
@@ -74,7 +74,7 @@ class _UsTextFormFieldState extends State<UsTextFormField> {
               child: Icon(
                 (isActive)
                     ? widget.activeSuffixIcon
-                    : widget.deactiveSuffixIcon,
+                    : widget.deActiveSuffixIcon,
                 color: Theme.of(context).primaryColor,
               ),
             ),
