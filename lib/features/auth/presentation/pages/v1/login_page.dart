@@ -75,7 +75,7 @@ class _DefaultState extends State<Default> {
     }
   }
 
-  void fForgetPassword() => GoRouter.of(context).goNamed('forget-password');
+  void fForgetPassword() => GoRouter.of(context).pushNamed('forget-password');
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +220,7 @@ class _DefaultState extends State<Default> {
                   /// Login Button
                   Padding(
                     padding:
-                        EdgeInsets.only(top: SizeConfig.screenHeight * 0.8),
+                        EdgeInsets.only(top: SizeConfig.screenHeight * 0.9),
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: SizedBox(

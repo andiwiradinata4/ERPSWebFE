@@ -1,3 +1,4 @@
+import 'package:erps/app/components/us_app_bar.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
@@ -32,6 +33,12 @@ class _VerifyTokenPageState extends State<VerifyTokenPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
+      appBar: Responsive.isMobile(context)
+          ? usAppBar(
+              context,
+              title: 'Verifikasi',
+            )
+          : null,
       body: Responsive(
         desktop: Default(
             process: widget.process,
@@ -99,7 +106,7 @@ class _DefaultState extends State<Default> {
     }
   }
 
-  void fBack() => GoRouter.of(context).goNamed('forget-password');
+  void fBack() => context.pop();
 
   @override
   Widget build(BuildContext context) {
@@ -146,23 +153,9 @@ class _DefaultState extends State<Default> {
               child: Stack(
                 children: [
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /// Spacer
-                      SizedBox(
-                        height: SizeConfig.screenHeight * 0.3,
-                      ),
-
-                      /// Header Text
-                      const Text(
-                        'Verifikasi',
-                        style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                            height: 1.5),
-                      ),
-
                       /// Body
                       RichText(
                         textAlign: TextAlign.start,

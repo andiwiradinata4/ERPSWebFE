@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:erps/app/components/us_app_bar.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
@@ -21,9 +22,14 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return const Scaffold(
-      // appBar: AppBar(),
-      body: Responsive(
+    return Scaffold(
+      appBar: Responsive.isMobile(context)
+          ? usAppBar(
+              context,
+              title: 'Lupa Password',
+            )
+          : null,
+      body: const Responsive(
         desktop: Default(),
         mobile: Default(),
         tablet: Default(),
@@ -83,8 +89,7 @@ class _DefaultState extends State<Default> {
             log("${state.token.accessToken} - ${state.token.code}");
             Future.delayed(
                 Duration.zero,
-                () => GoRouter.of(context)
-                        .goNamed('forget-password-verify', extra: {
+                () => context.pushNamed('forget-password-verify', extra: {
                       'process': 'RESET_PASSWORD',
                       'references': emailController.text.trim(),
                       'accessToken': state.token.accessToken,
@@ -112,22 +117,22 @@ class _DefaultState extends State<Default> {
               child: Stack(
                 children: [
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Spacer
-                      SizedBox(
-                        height: SizeConfig.screenHeight * 0.3,
+                      const SizedBox(
+                        height: 15,
                       ),
-
-                      /// Header Text
-                      const Text(
-                        'Lupa Password',
-                        style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                            height: 1.5),
-                      ),
+                      //
+                      // /// Header Text
+                      // const Text(
+                      //   'Lupa Password',
+                      //   style: TextStyle(
+                      //       fontSize: 28,
+                      //       fontWeight: FontWeight.w700,
+                      //       height: 1.5),
+                      // ),
 
                       /// Welcome Text
                       const Text(
@@ -140,12 +145,12 @@ class _DefaultState extends State<Default> {
 
                       /// Spacer
                       const SizedBox(
-                        height: 25,
+                        height: 15,
                       ),
 
                       /// Email
                       UsTextFormField(
-                        fieldName: 'Email',
+                        fieldName: '',
                         usController: emailController,
                         textInputType: TextInputType.emailAddress,
                         validateValue: (String? value) {
@@ -163,10 +168,9 @@ class _DefaultState extends State<Default> {
                       ),
                     ],
                   ),
-
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: SizeConfig.screenHeight * 0.8),
+                    padding:
+                        EdgeInsets.only(top: SizeConfig.screenHeight * 0.8),
                     child: Column(
                       children: [
                         /// Next Button
@@ -179,7 +183,8 @@ class _DefaultState extends State<Default> {
                                 child: const Text(
                                   'Lanjut',
                                   style: TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.w800),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800),
                                 )),
                           ),
                         ),
@@ -195,7 +200,8 @@ class _DefaultState extends State<Default> {
                                 child: const Text(
                                   'Kembali',
                                   style: TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.w800),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800),
                                 )),
                           ),
                         ),
