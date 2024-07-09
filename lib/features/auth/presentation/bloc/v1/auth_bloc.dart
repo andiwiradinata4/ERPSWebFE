@@ -3,6 +3,7 @@ import 'package:erps/core/error/error_response_exception.dart';
 import 'package:erps/core/models/token.dart';
 import 'package:erps/features/auth/data/models/user.dart';
 import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
+import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
 import 'package:erps/features/auth/domain/services/v1/abs_auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,7 +11,7 @@ part 'auth_event.dart';
 
 part 'auth_state.dart';
 
-class AuthBloc extends Bloc<LoginEvent, AuthState> {
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AbsAuthService _service;
 
   AuthBloc(this._service) : super(LoginUninitializedState()) {

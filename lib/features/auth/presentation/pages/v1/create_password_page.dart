@@ -1,25 +1,18 @@
 import 'package:erps/app/components/us_app_bar.dart';
-import 'package:erps/app/components/us_dialog_builder.dart';
-import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
 import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-/// PROCESS : RESET_PASSWORD | CHANGE_PASSWORD | CHANGE_PHONE_NUMBER
-
-class VerifyTokenPage extends StatelessWidget {
-  final String process;
+class CreatePasswordPage extends StatelessWidget {
   final String references;
   final String accessToken;
   final String code;
 
-  const VerifyTokenPage(
+  const CreatePasswordPage(
       {super.key,
-      required this.process,
       required this.references,
       required this.accessToken,
       required this.code});
@@ -36,34 +29,23 @@ class VerifyTokenPage extends StatelessWidget {
           : null,
       body: Responsive(
         desktop: Default(
-            process: process,
-            references: references,
-            accessToken: accessToken,
-            code: code),
+            references: references, accessToken: accessToken, code: code),
         mobile: Default(
-            process: process,
-            references: references,
-            accessToken: accessToken,
-            code: code),
+            references: references, accessToken: accessToken, code: code),
         tablet: Default(
-            process: process,
-            references: references,
-            accessToken: accessToken,
-            code: code),
+            references: references, accessToken: accessToken, code: code),
       ),
     );
   }
 }
 
 class Default extends StatefulWidget {
-  final String process;
   final String references;
   final String accessToken;
   final String code;
 
   const Default(
       {super.key,
-      required this.process,
       required this.references,
       required this.accessToken,
       required this.code});
@@ -74,7 +56,8 @@ class Default extends StatefulWidget {
 
 class _DefaultState extends State<Default> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController codeController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  late AuthBloc _authBloc;
 
   @override
   void initState() {
@@ -83,21 +66,21 @@ class _DefaultState extends State<Default> {
 
   void fVerify() {
     if (formKey.currentState!.validate()) {
-      if (widget.code != codeController.text.trim()) {
-        Future.delayed(Duration.zero, () {
-          UsSnackBarBuilder.showErrorSnackBar(
-              context, 'Kode verifikasi tidak valid!');
-        });
-        return;
-      }
+      // if (widget.code != codeController.text.trim()) {
+      //   Future.delayed(Duration.zero, () {
+      //     UsSnackBarBuilder.showErrorSnackBar(
+      //         context, 'Kode verifikasi tidak valid!');
+      //   });
+      //   return;
+      // }
 
-      if (widget.process == "RESET_PASSWORD") {
-        context.pushNamed('create-password-page', extra: {
-          'references': widget.references,
-          'accessToken': widget.accessToken,
-          'code': widget.code
-        });
-      }
+      // if (widget.process == "RESET_PASSWORD") {
+      //   context.pushNamed('create-password-page', extra: {
+      //     'references': widget.references,
+      //     'accessToken': widget.accessToken,
+      //     'code': widget.code
+      //   });
+      // }
     }
   }
 
@@ -154,17 +137,24 @@ class _DefaultState extends State<Default> {
 
                       /// Code
                       SizedBox(
-                        child: UsTextFormField(
-                          fieldName: 'Kode Verifikasi',
-                          usController: codeController,
-                          textInputType: TextInputType.number,
+                        child:
+
+                            /// Password
+                            UsTextFormField(
+                          fieldName: 'Password',
+                          usController: passwordController,
+                          textInputType: TextInputType.visiblePassword,
                           validateValue: (String? value) {
                             if (value == null || value.isEmpty) {
-                              return 'Masukan kode verifikasi terlebih dahulu';
+                              return 'Masukan password terlebih dahulu';
                             }
 
                             return null;
                           },
+                          useSuffixIcon: true,
+                          activeSuffixIcon: Icons.visibility_outlined,
+                          deActiveSuffixIcon: Icons.visibility_off_outlined,
+                          isPasswordHandle: true,
                         ),
                       ),
 
@@ -278,7 +268,7 @@ class _DefaultState extends State<Default> {
                   width: SizeConfig.screenWidth * 0.3,
                   child: UsTextFormField(
                     fieldName: 'Kode Verifikasi',
-                    usController: codeController,
+                    usController: passwordController,
                     textInputType: TextInputType.number,
                     validateValue: (String? value) {
                       if (value == null || value.isEmpty) {
@@ -338,53 +328,3 @@ class _DefaultState extends State<Default> {
         ],
       );
 }
-
-//
-// class VerifyTokenPage extends StatefulWidget {
-//   final String process;
-//   final String references;
-//   final String accessToken;
-//   final String code;
-//
-//   const VerifyTokenPage(
-//       {super.key,
-//         required this.process,
-//         required this.references,
-//         required this.accessToken,
-//         required this.code});
-//
-//   @override
-//   State<VerifyTokenPage> createState() => _VerifyTokenPageState();
-// }
-//
-// class _VerifyTokenPageState extends State<VerifyTokenPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     SizeConfig().init(context);
-//     return Scaffold(
-//       appBar: Responsive.isMobile(context)
-//           ? usAppBar(
-//         context,
-//         title: 'Verifikasi',
-//       )
-//           : null,
-//       body: Responsive(
-//         desktop: Default(
-//             process: widget.process,
-//             references: widget.references,
-//             accessToken: widget.accessToken,
-//             code: widget.code),
-//         mobile: Default(
-//             process: widget.process,
-//             references: widget.references,
-//             accessToken: widget.accessToken,
-//             code: widget.code),
-//         tablet: Default(
-//             process: widget.process,
-//             references: widget.references,
-//             accessToken: widget.accessToken,
-//             code: widget.code),
-//       ),
-//     );
-//   }
-// }

@@ -82,9 +82,6 @@ class _DefaultState extends State<Default> {
             Future.delayed(Duration.zero, () {
               UsSnackBarBuilder.showErrorSnackBar(context, state.message);
             });
-          } else if (state is LoginLoadingState) {
-            Future.delayed(Duration.zero,
-                () => UsDialogBuilder.loadLoadingDialog(context));
           } else if (state is ForgetPasswordTokenState) {
             log("${state.token.accessToken} - ${state.token.code}");
             Future.delayed(

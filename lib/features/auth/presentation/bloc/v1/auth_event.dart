@@ -1,11 +1,11 @@
 part of 'auth_bloc.dart';
 
-abstract class LoginEvent extends Equatable {
+abstract class AuthEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class LoginAuthEvent extends LoginEvent {
+class LoginAuthEvent extends AuthEvent {
   final String username, password;
   final Map<String, String>? queries;
 
@@ -16,18 +16,27 @@ class LoginAuthEvent extends LoginEvent {
   List<Object?> get props => [username, password];
 }
 
-class MeEvent extends LoginEvent {
+class MeEvent extends AuthEvent {
   MeEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class ForgetPasswordTokenEvent extends LoginEvent {
+class ForgetPasswordTokenEvent extends AuthEvent {
   final String email;
 
   ForgetPasswordTokenEvent({required this.email});
 
   @override
   List<Object?> get props => [email];
+}
+
+class ResetPasswordEvent extends AuthEvent {
+  final ResetPasswordEntity data;
+
+  ResetPasswordEvent({required this.data});
+
+  @override
+  List<Object?> get props => [data];
 }
