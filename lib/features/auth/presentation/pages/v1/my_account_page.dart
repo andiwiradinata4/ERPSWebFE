@@ -2,9 +2,9 @@ import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/utils/config.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 class MyAccountPage extends StatelessWidget {
   const MyAccountPage({super.key});
@@ -38,6 +38,7 @@ class Desktop extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// Header
                   Container(
                     height: 150,
                     padding: const EdgeInsets.only(top: 50),
@@ -64,10 +65,19 @@ class Desktop extends StatelessWidget {
 
                   /// Image
                   Container(
-                    width: 100,
-                    height: 100,
+                    width: 150,
+                    height: 150,
                     decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                        color: Theme.of(context).primaryColor.withOpacity(0.3),
+                        shape: BoxShape.circle),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: SvgPicture.asset(
+                          'lib/assets/svg/account2.svg',
+                          fit: BoxFit.cover,
+                          width: 1,
+                          height: 1),
+                    ),
                   ),
 
                   const SizedBox(
@@ -97,9 +107,15 @@ class Desktop extends StatelessWidget {
                                     color: bgError,
                                     fontWeight: FontWeight.w600),
                               ))
-                          : const Text(
-                              'Terverifikasi',
-                              style: TextStyle(color: bgSuccess),
+                          : Row(
+                              children: [
+                                SvgPicture.asset(
+                                    'lib/assets/svg/verified_success.svg'),
+                                const Text(
+                                  'Terverifikasi',
+                                  style: TextStyle(color: bgSuccess),
+                                ),
+                              ],
                             ),
                     ],
                   )

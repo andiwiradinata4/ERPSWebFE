@@ -45,7 +45,7 @@ class _SideBarState extends State<SideBar> {
     super.initState();
     items = [
       LinkSideBar(
-          icon: 'lib/assets/svg/home.svg',
+          icon: 'lib/assets/svg/home',
           label: 'Home',
           link: 'home',
           onPressed: () {}),
@@ -79,12 +79,12 @@ class _SideBarState extends State<SideBar> {
       //     link: '',
       //     onPressed: () {}),
       LinkSideBar(
-          icon: 'lib/assets/svg/account.svg',
+          icon: 'lib/assets/svg/account',
           label: 'Akun Saya',
           link: 'my-account',
           onPressed: () {}),
       LinkSideBar(
-          icon: 'lib/assets/svg/logout.svg',
+          icon: 'lib/assets/svg/logout',
           label: 'Keluar',
           link: 'login',
           onPressed: () {
@@ -204,13 +204,15 @@ class _SideBarState extends State<SideBar> {
               children: [
                 /// Sidebar image / icon
                 (item.icon != '')
-                    ? SvgPicture.asset(item.icon,
-                        width: 30,
-                        height: 30,
-                        // color: (item == selectedItem)
-                        //     ? Colors.white
-                        //     : Theme.of(context).primaryColor,
-                        semanticsLabel: item.label)
+                    ? (item == selectedItem)
+                        ? SvgPicture.asset('${item.icon}_white.svg',
+                            width: 30,
+                            height: 30,
+                            semanticsLabel: item.label)
+                        : SvgPicture.asset('${item.icon}_primary.svg',
+                            width: 30,
+                            height: 30,
+                            semanticsLabel: item.label)
                     : const SizedBox(
                         width: 30,
                       ),
