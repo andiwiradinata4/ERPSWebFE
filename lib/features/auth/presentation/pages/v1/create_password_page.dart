@@ -1,9 +1,14 @@
 import 'package:erps/app/components/us_app_bar.dart';
+import 'package:erps/app/components/us_dialog_builder.dart';
+import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
+import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
 import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
+import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class CreatePasswordPage extends StatelessWidget {
@@ -24,7 +29,7 @@ class CreatePasswordPage extends StatelessWidget {
       appBar: Responsive.isMobile(context)
           ? usAppBar(
               context,
-              title: 'Verifikasi',
+              title: 'Buat Password Baru',
             )
           : null,
       body: Responsive(
@@ -57,30 +62,25 @@ class Default extends StatefulWidget {
 class _DefaultState extends State<Default> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   late AuthBloc _authBloc;
 
   @override
   void initState() {
     super.initState();
+
+    /// Get Auth Bloc
+    _authBloc = context.read<AuthBloc>();
   }
 
   void fVerify() {
     if (formKey.currentState!.validate()) {
-      // if (widget.code != codeController.text.trim()) {
-      //   Future.delayed(Duration.zero, () {
-      //     UsSnackBarBuilder.showErrorSnackBar(
-      //         context, 'Kode verifikasi tidak valid!');
-      //   });
-      //   return;
-      // }
-
-      // if (widget.process == "RESET_PASSWORD") {
-      //   context.pushNamed('create-password-page', extra: {
-      //     'references': widget.references,
-      //     'accessToken': widget.accessToken,
-      //     'code': widget.code
-      //   });
-      // }
+      _authBloc.add(ResetPasswordEvent(
+          data: ResetPasswordEntity(
+              email: widget.references,
+              newPassword: passwordController.text.trim(),
+              token: widget.accessToken,
+              code: widget.code)));
     }
   }
 
@@ -88,12 +88,31 @@ class _DefaultState extends State<Default> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: (Responsive.isMobile(context))
-            ? mobileView(widget.references)
-            : desktopView(widget.references),
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (previousState, state) {
+        if (previousState is LoginLoadingState) {
+          UsDialogBuilder.dispose();
+        }
+        return true;
+      },
+      listener: ((context, state) {
+        if (state is ResetPasswordSuccessState) {
+          Future.delayed(Duration.zero,
+              () => context.pushReplacementNamed(routeNameLoginPage));
+        } else if (state is ResetPasswordErrorState) {
+          Future.delayed(Duration.zero, () {
+            UsSnackBarBuilder.showErrorSnackBar(
+                context, 'Gagal Buat Password Baru!');
+          });
+        }
+      }),
+      child: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: (Responsive.isMobile(context))
+              ? mobileView(widget.references)
+              : desktopView(widget.references),
+        ),
       ),
     );
   }
@@ -112,43 +131,39 @@ class _DefaultState extends State<Default> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /// Body
-                      RichText(
-                        textAlign: TextAlign.start,
-                        text: TextSpan(
-                          text:
-                              'Masukan kode verifikasi yang telah dikirim ke ',
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(fontSize: 16, height: 1.5),
-                          children: [
-                            TextSpan(
-                                text: references,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
+                      /// Spacer
+                      const SizedBox(
+                        height: 15,
+                      ),
+
+                      /// Header Text
+                      const Text(
+                        'Silahkan Buat Password Baru Anda',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5),
                       ),
 
                       /// Spacer
                       const SizedBox(
-                        height: 25,
+                        height: 18,
                       ),
 
-                      /// Code
+                      /// Password
                       SizedBox(
-                        child:
-
-                            /// Password
-                            UsTextFormField(
-                          fieldName: 'Password',
+                        child: UsTextFormField(
+                          fieldName: 'Password Baru',
                           usController: passwordController,
                           textInputType: TextInputType.visiblePassword,
                           validateValue: (String? value) {
                             if (value == null || value.isEmpty) {
-                              return 'Masukan password terlebih dahulu';
+                              return 'Masukan Password Baru terlebih dahulu';
                             }
-
+                            if (value.trim() !=
+                                confirmPasswordController.text.trim()) {
+                              return 'Password Baru dan Konfirmasi Password Baru tidak sama!';
+                            }
                             return null;
                           },
                           useSuffixIcon: true,
@@ -160,7 +175,32 @@ class _DefaultState extends State<Default> {
 
                       /// Spacer
                       const SizedBox(
-                        height: 15,
+                        height: 25,
+                      ),
+
+                      /// Confirm Password
+                      SizedBox(
+                        child: UsTextFormField(
+                          fieldName: 'Konfirmasi Password Baru',
+                          usController: confirmPasswordController,
+                          textInputType: TextInputType.visiblePassword,
+                          validateValue: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan kofirmasi Password Baru terlebih dahulu';
+                            }
+
+                            if (value.trim() !=
+                                passwordController.text.trim()) {
+                              return 'Password Baru dan Konfirmasi Password Baru tidak sama!';
+                            }
+
+                            return null;
+                          },
+                          useSuffixIcon: true,
+                          activeSuffixIcon: Icons.visibility_outlined,
+                          deActiveSuffixIcon: Icons.visibility_off_outlined,
+                          isPasswordHandle: true,
+                        ),
                       ),
                     ],
                   ),
@@ -232,29 +272,49 @@ class _DefaultState extends State<Default> {
 
                 /// Header Text
                 const Text(
-                  'Verifikasi',
+                  'Buat Password Baru',
                   style: TextStyle(
                       fontSize: 40, fontWeight: FontWeight.w600, height: 1.5),
                 ),
 
                 /// Spacer
                 const SizedBox(
-                  height: 30,
+                  height: 18,
                 ),
 
-                /// Body
-                RichText(
-                  textAlign: TextAlign.start,
-                  text: TextSpan(
-                    text: 'Masukan kode verifikasi yang telah dikirim ke ',
-                    style: DefaultTextStyle.of(context)
-                        .style
-                        .copyWith(fontSize: 20, height: 1.5),
-                    children: [
-                      TextSpan(
-                          text: references,
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                    ],
+                /// Body Text
+                const Text(
+                  'Silahkan Buat Password Baru Anda',
+                  style: TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w500, height: 1.5),
+                ),
+
+                /// Spacer
+                const SizedBox(
+                  height: 18,
+                ),
+
+                /// Password
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.3,
+                  child: UsTextFormField(
+                    fieldName: 'Password Baru',
+                    usController: passwordController,
+                    textInputType: TextInputType.visiblePassword,
+                    validateValue: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Masukan password baru terlebih dahulu';
+                      }
+                      if (value.trim() !=
+                          confirmPasswordController.text.trim()) {
+                        return 'Password Baru dan Konfirmasi Password tidak sama!';
+                      }
+                      return null;
+                    },
+                    useSuffixIcon: true,
+                    activeSuffixIcon: Icons.visibility_outlined,
+                    deActiveSuffixIcon: Icons.visibility_off_outlined,
+                    isPasswordHandle: true,
                   ),
                 ),
 
@@ -263,20 +323,28 @@ class _DefaultState extends State<Default> {
                   height: 18,
                 ),
 
-                /// Code
+                /// Confirm Password
                 SizedBox(
                   width: SizeConfig.screenWidth * 0.3,
                   child: UsTextFormField(
-                    fieldName: 'Kode Verifikasi',
-                    usController: passwordController,
-                    textInputType: TextInputType.number,
+                    fieldName: 'Konfirmasi Password Baru',
+                    usController: confirmPasswordController,
+                    textInputType: TextInputType.visiblePassword,
                     validateValue: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Masukan kode verifikasi terlebih dahulu';
+                        return 'Masukan Konfirmasi Password Baru terlebih dahulu';
+                      }
+
+                      if (value.trim() != passwordController.text.trim()) {
+                        return 'Password Baru dan Konfirmasi Password Baru tidak sama!';
                       }
 
                       return null;
                     },
+                    useSuffixIcon: true,
+                    activeSuffixIcon: Icons.visibility_outlined,
+                    deActiveSuffixIcon: Icons.visibility_off_outlined,
+                    isPasswordHandle: true,
                   ),
                 ),
 

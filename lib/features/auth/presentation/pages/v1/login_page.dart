@@ -5,6 +5,7 @@ import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
 import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
+import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -75,7 +76,7 @@ class _DefaultState extends State<Default> {
     }
   }
 
-  void fForgetPassword() => GoRouter.of(context).pushNamed('forget-password');
+  void fForgetPassword() => GoRouter.of(context).pushNamed(routeNameForgetPasswordPage);
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +101,7 @@ class _DefaultState extends State<Default> {
             if (widget.redirectTo.isNotEmpty) {
               GoRouter.of(context).pushReplacement(widget.redirectTo);
             } else {
-              GoRouter.of(context).pushReplacementNamed('home');
+              GoRouter.of(context).pushReplacementNamed(routeNameHomePage);
             }
           }
         }),

@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:erps/app/components/us_app_bar.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
-import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
 import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
+import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -66,7 +66,7 @@ class _DefaultState extends State<Default> {
     }
   }
 
-  void fBack() => GoRouter.of(context).pushReplacementNamed('login');
+  void fBack() => GoRouter.of(context).pushReplacementNamed(routeNameLoginPage);
 
   @override
   Widget build(BuildContext context) {
@@ -78,15 +78,11 @@ class _DefaultState extends State<Default> {
           return true;
         },
         listener: ((context, state) {
-          if (state is LoginErrorState) {
-            Future.delayed(Duration.zero, () {
-              UsSnackBarBuilder.showErrorSnackBar(context, state.message);
-            });
-          } else if (state is ForgetPasswordTokenState) {
+          if (state is ForgetPasswordTokenState) {
             log("${state.token.accessToken} - ${state.token.code}");
             Future.delayed(
                 Duration.zero,
-                () => context.pushNamed('forget-password-verify', extra: {
+                () => context.pushNamed(routeNameVerifyTokenPage, extra: {
                       'process': 'RESET_PASSWORD',
                       'references': emailController.text.trim(),
                       'accessToken': state.token.accessToken,
@@ -121,17 +117,8 @@ class _DefaultState extends State<Default> {
                       const SizedBox(
                         height: 15,
                       ),
-                      //
-                      // /// Header Text
-                      // const Text(
-                      //   'Lupa Password',
-                      //   style: TextStyle(
-                      //       fontSize: 28,
-                      //       fontWeight: FontWeight.w700,
-                      //       height: 1.5),
-                      // ),
 
-                      /// Welcome Text
+                      /// Header Text
                       const Text(
                         'Silahkan Masukkan Email Anda',
                         style: TextStyle(
@@ -237,7 +224,7 @@ class _DefaultState extends State<Default> {
                       fontSize: 40, fontWeight: FontWeight.w600, height: 1.5),
                 ),
 
-                /// Welcome Text
+                /// Body Text
                 const Text(
                   'Silahkan Masukkan Email Anda',
                   style: TextStyle(
@@ -246,12 +233,12 @@ class _DefaultState extends State<Default> {
 
                 /// Spacer
                 const SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
 
                 /// Email
                 SizedBox(
-                  width: SizeConfig.screenWidth * 0.4,
+                  width: SizeConfig.screenWidth * 0.3,
                   child: UsTextFormField(
                     fieldName: 'Email',
                     usController: emailController,
@@ -271,13 +258,13 @@ class _DefaultState extends State<Default> {
                 ),
 
                 SizedBox(
-                  width: SizeConfig.screenWidth * 0.4,
+                  width: SizeConfig.screenWidth * 0.3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       /// Next Button
                       SizedBox(
-                        width: SizeConfig.screenWidth * 0.19,
+                        width: SizeConfig.screenWidth * 0.14,
                         child: ElevatedButton(
                             onPressed: fForgetPasswordToken,
                             child: const Text(
@@ -293,7 +280,7 @@ class _DefaultState extends State<Default> {
                       ),
 
                       SizedBox(
-                        width: SizeConfig.screenWidth * 0.19,
+                        width: SizeConfig.screenWidth * 0.14,
                         child: OutlinedButton(
                             onPressed: fBack,
                             child: const Text(

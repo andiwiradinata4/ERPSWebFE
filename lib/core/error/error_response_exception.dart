@@ -32,7 +32,11 @@ class ErrorResponseException implements Exception {
       errorMsg = {};
       errors.addAll({'error': errors["detail"]});
       errorMsg = {'detail': [errors["detail"]]};
-    } else {
+    } else if (errors.containsKey('Message')) {
+      errorMsg = {};
+      errors.addAll({'error': errors["Message"]});
+      errorMsg = {'detail': [errors["Message"]]};
+    }  else {
       errorMsg = {};
       String msg = '';
       for (String key in errors.keys) {

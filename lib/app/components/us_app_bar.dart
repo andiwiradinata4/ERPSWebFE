@@ -8,14 +8,11 @@ AppBar usAppBar(BuildContext context, {required String title}) {
           context.pop();
         },
         icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-    title: Center(
-      child: Text(
-        title,
-        textAlign: TextAlign.center,
-        maxLines: 1,
-        style:
-            Theme.of(context).appBarTheme.titleTextStyle?.copyWith(height: 1.2),
-      ),
+    title: Text(
+      title,
+      maxLines: 1,
+      style:
+          Theme.of(context).appBarTheme.titleTextStyle?.copyWith(height: 1.2),
     ),
   );
 }

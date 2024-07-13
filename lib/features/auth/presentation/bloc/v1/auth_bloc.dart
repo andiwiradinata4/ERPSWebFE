@@ -18,13 +18,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginAuthEvent>(_onLoginAuthEvent);
     on<MeEvent>(_onMeEvent);
     on<ForgetPasswordTokenEvent>(_onForgetPasswordEvent);
+    on<ResetPasswordEvent>(_onResetPasswordEvent);
   }
 
   void _onLoginAuthEvent(LoginAuthEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
-      Token token = await _service
-          .login(LoginEntity(userName: event.username, password: event.password));
+      Token token = await _service.login(
+          LoginEntity(userName: event.username, password: event.password));
       emit(LoginSuccessState(token));
 
       User user = await _service.me();
@@ -58,11 +59,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _onForgetPasswordEvent(ForgetPasswordTokenEvent event, Emitter<AuthState> emit) async {
+  void _onForgetPasswordEvent(
+      ForgetPasswordTokenEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
       Token token = await _service.resetPasswordToken(event.email);
       emit(ForgetPasswordTokenState(token));
+    } on ErrorResponseException catch (e) {
+      emit(LoginErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString()));
+    }
+  }
+
+  void _onResetPasswordEvent(
+      ResetPasswordEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      bool success = await _service.resetPassword(event.data);
+      (success)
+          ? emit(ResetPasswordSuccessState())
+          : emit(ResetPasswordErrorState());
     } on ErrorResponseException catch (e) {
       emit(LoginErrorState(
           statusCode: e.statusCode,

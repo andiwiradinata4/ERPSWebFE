@@ -1,12 +1,10 @@
 import 'package:erps/app/components/us_app_bar.dart';
-import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
+import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 /// PROCESS : RESET_PASSWORD | CHANGE_PASSWORD | CHANGE_PHONE_NUMBER
@@ -92,7 +90,12 @@ class _DefaultState extends State<Default> {
       }
 
       if (widget.process == "RESET_PASSWORD") {
-        context.pushNamed('create-password-page', extra: {
+        // context.goNamed(routeNameCreatePasswordPage, extra: {
+        //   'references': widget.references,
+        //   'accessToken': widget.accessToken,
+        //   'code': widget.code
+        // });
+        context.pushNamed(routeNameCreatePasswordPage, extra: {
           'references': widget.references,
           'accessToken': widget.accessToken,
           'code': widget.code

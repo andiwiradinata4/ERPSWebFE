@@ -11,20 +11,28 @@ import 'package:go_router/go_router.dart';
 
 final List<RouteBase> routerList = [];
 final anonymous = [
-  '/login',
-  '/forget-password',
-  '/forget-password-verify',
-  '/create-password-page'
+  routePathLoginPage,
+  routePathForgetPasswordPage,
+  routePathVerifyTokenPage,
+  routePathCreatePasswordPage
 ];
 
 /// RoutePath
 const String routePathHomePage = '/';
+const String routePathLoginPage = '/login';
+const String routePathForgetPasswordPage = '/forget-password';
+const String routePathVerifyTokenPage = '/verify-token';
+const String routePathCreatePasswordPage = '/create-password';
 const String routePathMasterAccessPage = '/access';
 const String routePathMasterProgramPage = '/program';
 const String routePathMasterModulePage = '/module';
 
 /// RouteName
 const String routeNameHomePage = 'home';
+const String routeNameLoginPage = 'login';
+const String routeNameForgetPasswordPage = 'forget-password';
+const String routeNameVerifyTokenPage = 'verify-token';
+const String routeNameCreatePasswordPage = 'create-password';
 const String routeNameMasterAccessPage = 'access';
 const String routeNameMasterProgramPage = 'program';
 const String routeNameMasterModulePage = 'module';
@@ -91,8 +99,8 @@ void populateRoutes(
 
   routerList.add(
     GoRoute(
-        path: '/forget-password',
-        name: 'forget-password',
+        path: routePathForgetPasswordPage,
+        name: routeNameForgetPasswordPage,
         builder: (context, state) {
           return const ForgetPasswordPage();
         }),
@@ -100,8 +108,8 @@ void populateRoutes(
 
   routerList.add(
     GoRoute(
-        path: '/forget-password-verify',
-        name: 'forget-password-verify',
+        path: routePathVerifyTokenPage,
+        name: routeNameVerifyTokenPage,
         builder: (context, state) {
           String process = '';
           String references = '';
@@ -127,8 +135,8 @@ void populateRoutes(
 
   routerList.add(
     GoRoute(
-        path: '/create-password',
-        name: 'create-password',
+        path: routePathCreatePasswordPage,
+        name: routeNameCreatePasswordPage,
         builder: (context, state) {
           String references = '';
           String accessToken = '';
