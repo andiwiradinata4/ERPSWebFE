@@ -49,34 +49,39 @@ class _SideBarState extends State<SideBar> {
           label: 'Home',
           link: 'home',
           onPressed: () {}),
+      // LinkSideBar(
+      //     icon: 'lib/assets/svg/master.svg',
+      //     label: 'Master',
+      //     link: '',
+      //     onPressed: () {},
+      //     children: [
+      //       // LinkSideBar(
+      //       //     icon: '',
+      //       //     label: 'Access',
+      //       //     link: routeNameMasterAccessPage,
+      //       //     onPressed: () {}),
+      //       // LinkSideBar(
+      //       //     icon: '',
+      //       //     label: 'Program',
+      //       //     link: routeNameMasterProgramPage,
+      //       //     onPressed: () {}),
+      //       LinkSideBar(
+      //           icon: '', label: 'Module', link: 'module', onPressed: () {}),
+      //     ]),
+      // LinkSideBar(
+      //     icon: 'lib/assets/svg/transaction.svg',
+      //     label: 'Transaksi',
+      //     link: '',
+      //     onPressed: () {}),
+      // LinkSideBar(
+      //     icon: 'lib/assets/svg/report.svg',
+      //     label: 'Laporan',
+      //     link: '',
+      //     onPressed: () {}),
       LinkSideBar(
-          icon: 'lib/assets/svg/master.svg',
-          label: 'Master',
-          link: '',
-          onPressed: () {},
-          children: [
-            // LinkSideBar(
-            //     icon: '',
-            //     label: 'Access',
-            //     link: routeNameMasterAccessPage,
-            //     onPressed: () {}),
-            // LinkSideBar(
-            //     icon: '',
-            //     label: 'Program',
-            //     link: routeNameMasterProgramPage,
-            //     onPressed: () {}),
-            LinkSideBar(
-                icon: '', label: 'Module', link: 'module', onPressed: () {}),
-          ]),
-      LinkSideBar(
-          icon: 'lib/assets/svg/transaction.svg',
-          label: 'Transaksi',
-          link: '',
-          onPressed: () {}),
-      LinkSideBar(
-          icon: 'lib/assets/svg/report.svg',
-          label: 'Laporan',
-          link: '',
+          icon: 'lib/assets/svg/account.svg',
+          label: 'Akun Saya',
+          link: 'my-account',
           onPressed: () {}),
       LinkSideBar(
           icon: 'lib/assets/svg/logout.svg',

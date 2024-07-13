@@ -2,6 +2,7 @@ import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/wrapper.dart';
 import 'package:erps/features/auth/presentation/pages/v1/create_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/forget_password_page.dart';
+import 'package:erps/features/auth/presentation/pages/v1/my_account_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/verify_token_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/login_page.dart';
 import 'package:erps/features/home/presentation/pages/home_page.dart';
@@ -23,6 +24,7 @@ const String routePathLoginPage = '/login';
 const String routePathForgetPasswordPage = '/forget-password';
 const String routePathVerifyTokenPage = '/verify-token';
 const String routePathCreatePasswordPage = '/create-password';
+const String routePathMyAccountPage = '/my-account';
 const String routePathMasterAccessPage = '/access';
 const String routePathMasterProgramPage = '/program';
 const String routePathMasterModulePage = '/module';
@@ -33,6 +35,7 @@ const String routeNameLoginPage = 'login';
 const String routeNameForgetPasswordPage = 'forget-password';
 const String routeNameVerifyTokenPage = 'verify-token';
 const String routeNameCreatePasswordPage = 'create-password';
+const String routeNameMyAccountPage = 'my-account';
 const String routeNameMasterAccessPage = 'access';
 const String routeNameMasterProgramPage = 'program';
 const String routeNameMasterModulePage = 'module';
@@ -47,10 +50,10 @@ final appRouter = GoRouter(
           BlocProvider.of<AuthCubit>(context).state is Authenticated;
       final gotoAnonymous = anonymous.contains(state.matchedLocation);
       if (!loggedIn && !gotoAnonymous) {
-        return '/login?redirect=${state.uri.path.toString()}';
+        return '$routePathLoginPage?redirect=${state.uri.path.toString()}';
       }
 
-      if (loggedIn && state.matchedLocation == "/login") {
+      if (loggedIn && state.matchedLocation == routePathLoginPage) {
         if (state.uri.queryParameters.containsKey("redirect")) {
           return state.uri.queryParameters["redirect"];
         } else {
@@ -62,6 +65,7 @@ final appRouter = GoRouter(
 
 void populateRoutes(
     LocalKey scaffoldKey, ScrollController horizontalController) {
+  /// Home Page
   routerList.add(GoRoute(
       path: routePathHomePage,
       name: routeNameHomePage,
@@ -74,6 +78,7 @@ void populateRoutes(
           key: scaffoldKey,
         );
       }));
+
   routerList.add(GoRoute(
       path: routePathMasterAccessPage,
       name: routeNameMasterAccessPage,
@@ -87,9 +92,10 @@ void populateRoutes(
         );
       }));
 
+  /// Authentication
   routerList.add(GoRoute(
-    path: '/login',
-    name: 'login',
+    path: routePathLoginPage,
+    name: routeNameLoginPage,
     builder: (context, state) {
       return LoginPage(
         redirectTo: state.uri.queryParameters['redirect'] ?? '',
@@ -156,6 +162,20 @@ void populateRoutes(
           );
         }),
   );
+
+  /// My Account Page
+  routerList.add(GoRoute(
+      path: routePathMyAccountPage,
+      name: routeNameMyAccountPage,
+      pageBuilder: (context, state) {
+        return FadeTransitionPage(
+          child: Wrapper(
+            verticalController: horizontalController,
+            child: WrapperWidget(child: const MyAccountPage()),
+          ),
+          key: scaffoldKey,
+        );
+      }));
 }
 
 class FadeTransitionPage extends CustomTransitionPage<void> {
