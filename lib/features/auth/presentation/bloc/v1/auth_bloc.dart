@@ -19,6 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<MeEvent>(_onMeEvent);
     on<ForgetPasswordTokenEvent>(_onForgetPasswordEvent);
     on<ResetPasswordEvent>(_onResetPasswordEvent);
+    on<ChangePasswordEvent>(_onChangePasswordEvent);
   }
 
   void _onLoginAuthEvent(LoginAuthEvent event, Emitter<AuthState> emit) async {
@@ -85,6 +86,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (success)
           ? emit(ResetPasswordSuccessState())
           : emit(ResetPasswordErrorState());
+    } on ErrorResponseException catch (e) {
+      emit(LoginErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString()));
+    }
+  }
+
+  void _onChangePasswordEvent(
+      ChangePasswordEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      bool success = await _service.changePassword(event.currentPassword, event.newPassword);
+      (success)
+          ? emit(ChangePasswordSuccessState())
+          : emit(ChangePasswordErrorState());
     } on ErrorResponseException catch (e) {
       emit(LoginErrorState(
           statusCode: e.statusCode,

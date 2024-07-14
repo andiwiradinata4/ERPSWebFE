@@ -1,5 +1,6 @@
 import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/wrapper.dart';
+import 'package:erps/features/auth/presentation/pages/v1/change_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/create_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/forget_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/my_account_page.dart';
@@ -24,6 +25,7 @@ const String routePathLoginPage = '/login';
 const String routePathForgetPasswordPage = '/forget-password';
 const String routePathVerifyTokenPage = '/verify-token';
 const String routePathCreatePasswordPage = '/create-password';
+const String routePathChangePasswordPage = '/change-password';
 const String routePathMyAccountPage = '/my-account';
 const String routePathMasterAccessPage = '/access';
 const String routePathMasterProgramPage = '/program';
@@ -35,6 +37,7 @@ const String routeNameLoginPage = 'login';
 const String routeNameForgetPasswordPage = 'forget-password';
 const String routeNameVerifyTokenPage = 'verify-token';
 const String routeNameCreatePasswordPage = 'create-password';
+const String routeNameChangePasswordPage = 'change-password';
 const String routeNameMyAccountPage = 'my-account';
 const String routeNameMasterAccessPage = 'access';
 const String routeNameMasterProgramPage = 'program';
@@ -175,6 +178,17 @@ void populateRoutes(
           ),
           key: scaffoldKey,
         );
+      }));
+
+  routerList.add(GoRoute(
+      path: routePathChangePasswordPage,
+      name: routeNameChangePasswordPage,
+      builder: (context, state) {
+        Object? extra = state.extra;
+        if (extra != null) {
+          if (extra is Map<String, String>) {}
+        }
+        return const ChangePasswordPage();
       }));
 }
 

@@ -40,3 +40,13 @@ class ResetPasswordEvent extends AuthEvent {
   @override
   List<Object?> get props => [data];
 }
+
+class ChangePasswordEvent extends AuthEvent {
+  final String currentPassword, newPassword;
+
+  ChangePasswordEvent(
+      {required this.currentPassword, required this.newPassword});
+
+  @override
+  List<Object?> get props => [currentPassword, newPassword];
+}

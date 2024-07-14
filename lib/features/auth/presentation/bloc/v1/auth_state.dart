@@ -61,3 +61,13 @@ class ResetPasswordErrorState extends AuthState {
   @override
   List<Object?> get props => [];
 }
+
+class ChangePasswordSuccessState extends AuthState {
+  @override
+  List<Object?> get props => [];
+}
+
+class ChangePasswordErrorState extends AuthState {
+  @override
+  List<Object?> get props => [];
+}

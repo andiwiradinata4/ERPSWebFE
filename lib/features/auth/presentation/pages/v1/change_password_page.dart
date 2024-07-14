@@ -1,63 +1,35 @@
-import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/us_app_bar.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
-import 'package:erps/core/config/injector_dependency_name.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
-import 'package:erps/features/auth/domain/services/v1/abs_auth_service.dart';
 import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
-import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-class CreatePasswordPage extends StatelessWidget {
-  final String references;
-  final String accessToken;
-  final String code;
-
-  const CreatePasswordPage(
-      {super.key,
-      required this.references,
-      required this.accessToken,
-      required this.code});
+class ChangePasswordPage extends StatelessWidget {
+  const ChangePasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
-      appBar: Responsive.isMobile(context)
-          ? usAppBar(
-              context,
-              title: 'Buat Password Baru',
-            )
-          : null,
-      body: Responsive(
-        desktop: Default(
-            references: references, accessToken: accessToken, code: code),
-        mobile: Default(
-            references: references, accessToken: accessToken, code: code),
-        tablet: Default(
-            references: references, accessToken: accessToken, code: code),
-      ),
-    );
+        appBar: Responsive.isMobile(context)
+            ? usAppBar(
+                context,
+                title: 'Ubah Password',
+              )
+            : null,
+        body: const Responsive(
+          desktop: Default(),
+          mobile: Default(),
+        ));
   }
 }
 
 class Default extends StatefulWidget {
-  final String references;
-  final String accessToken;
-  final String code;
-
-  const Default(
-      {super.key,
-      required this.references,
-      required this.accessToken,
-      required this.code});
+  const Default({super.key});
 
   @override
   State<Default> createState() => _DefaultState();
@@ -65,6 +37,7 @@ class Default extends StatefulWidget {
 
 class _DefaultState extends State<Default> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController currentPasswordController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   late AuthBloc _authBloc;
@@ -79,12 +52,9 @@ class _DefaultState extends State<Default> {
 
   void fVerify() {
     if (formKey.currentState!.validate()) {
-      _authBloc.add(ResetPasswordEvent(
-          data: ResetPasswordEntity(
-              email: widget.references,
-              newPassword: passwordController.text.trim(),
-              token: widget.accessToken,
-              code: widget.code)));
+      _authBloc.add(ChangePasswordEvent(
+          currentPassword: currentPasswordController.text.trim(),
+          newPassword: passwordController.text.trim()));
     }
   }
 
@@ -100,40 +70,33 @@ class _DefaultState extends State<Default> {
         return true;
       },
       listener: ((context, state) {
-        if (state is ResetPasswordSuccessState) {
-          final authCubit = context.read<AuthCubit>();
-          final authService = GetIt.I.get<AbsAuthService>(
-              instanceName: InjectorDependencyName.authService);
-          authService.deleteToken();
-          authCubit.setAsAnonymous();
-
-          Future.delayed(
-              Duration.zero, () => context.goNamed(routeNameHomePage));
-        } else if (state is ResetPasswordErrorState) {
+        if (state is ChangePasswordSuccessState) {
+          context.pop();
+        } else if (state is LoginErrorState) {
+          Future.delayed(Duration.zero, () {
+            UsSnackBarBuilder.showErrorSnackBar(context, state.message);
+          });
+        } else if (state is ChangePasswordErrorState) {
           Future.delayed(Duration.zero, () {
             UsSnackBarBuilder.showErrorSnackBar(
-                context, 'Gagal Buat Password Baru!');
+                context, 'Gagal Ganti Password!');
           });
         }
       }),
       child: SingleChildScrollView(
         child: Form(
           key: formKey,
-          child: (Responsive.isMobile(context))
-              ? mobileView(widget.references)
-              : desktopView(widget.references),
+          child: (Responsive.isMobile(context)) ? mobileView() : desktopView(),
         ),
       ),
     );
   }
 
-  Row mobileView(String references) => Row(
+  Row mobileView() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: SizeConfig.screenWidth,
-            padding:
-                EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.1),
+          SizedBox(
+            width: SizeConfig.screenWidth * 0.9,
             child: SingleChildScrollView(
               child: Stack(
                 children: [
@@ -148,7 +111,7 @@ class _DefaultState extends State<Default> {
 
                       /// Header Text
                       const Text(
-                        'Silahkan Buat Password Baru Anda',
+                        'Silahkan Masukan Password Lama dan Password Baru Anda',
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -158,6 +121,30 @@ class _DefaultState extends State<Default> {
                       /// Spacer
                       const SizedBox(
                         height: 18,
+                      ),
+
+                      /// Password
+                      SizedBox(
+                        child: UsTextFormField(
+                          fieldName: 'Password Lama',
+                          usController: currentPasswordController,
+                          textInputType: TextInputType.visiblePassword,
+                          validateValue: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan Password Lama terlebih dahulu';
+                            }
+                            return null;
+                          },
+                          useSuffixIcon: true,
+                          activeSuffixIcon: Icons.visibility_outlined,
+                          deActiveSuffixIcon: Icons.visibility_off_outlined,
+                          isPasswordHandle: true,
+                        ),
+                      ),
+
+                      /// Spacer
+                      const SizedBox(
+                        height: 25,
                       ),
 
                       /// Password
@@ -261,7 +248,7 @@ class _DefaultState extends State<Default> {
         ],
       );
 
-  Row desktopView(String references) => Row(
+  Row desktopView() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -282,7 +269,7 @@ class _DefaultState extends State<Default> {
 
                 /// Header Text
                 const Text(
-                  'Buat Password Baru',
+                  'Ganti Password',
                   style: TextStyle(
                       fontSize: 40, fontWeight: FontWeight.w600, height: 1.5),
                 ),
@@ -294,9 +281,34 @@ class _DefaultState extends State<Default> {
 
                 /// Body Text
                 const Text(
-                  'Silahkan Buat Password Baru Anda',
+                  'Silahkan Masukan Password Lama dan Password Baru Anda',
                   style: TextStyle(
                       fontSize: 20, fontWeight: FontWeight.w500, height: 1.5),
+                ),
+
+                /// Spacer
+                const SizedBox(
+                  height: 18,
+                ),
+
+                /// Password Lama
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.3,
+                  child: UsTextFormField(
+                    fieldName: 'Password Lama',
+                    usController: currentPasswordController,
+                    textInputType: TextInputType.visiblePassword,
+                    validateValue: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Masukan password lama terlebih dahulu';
+                      }
+                      return null;
+                    },
+                    useSuffixIcon: true,
+                    activeSuffixIcon: Icons.visibility_outlined,
+                    deActiveSuffixIcon: Icons.visibility_off_outlined,
+                    isPasswordHandle: true,
+                  ),
                 ),
 
                 /// Spacer
@@ -317,7 +329,7 @@ class _DefaultState extends State<Default> {
                       }
                       if (value.trim() !=
                           confirmPasswordController.text.trim()) {
-                        return 'Password Baru dan Konfirmasi Password tidak sama!';
+                        return 'Password Baru dan Konfirmasi Password Baru tidak sama!';
                       }
                       return null;
                     },
