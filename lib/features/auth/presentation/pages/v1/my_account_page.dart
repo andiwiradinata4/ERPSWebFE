@@ -43,6 +43,8 @@ class Desktop extends StatelessWidget {
       context.pushNamed(routeNameChangePasswordPage);
     }
 
+    void fEmailConfirmationTokenEvent() => authBloc.add(EmailConfirmationTokenEvent());
+
     return BlocListener<AuthBloc, AuthState>(
       listenWhen: (previousState, state) {
         if (previousState is LoginLoadingState) {
@@ -51,7 +53,10 @@ class Desktop extends StatelessWidget {
         return true;
       },
       listener: (context, state) {
-        if (state is ForgetPasswordTokenState) {
+        if (state is LoginLoadingState) {
+          Future.delayed(Duration.zero,
+                  () => UsDialogBuilder.loadLoadingDialog(context));
+        } else if (state is ForgetPasswordTokenState) {
           log("${state.token.accessToken} - ${state.token.code}");
           Future.delayed(
               Duration.zero,
@@ -61,9 +66,16 @@ class Desktop extends StatelessWidget {
                     'accessToken': state.token.accessToken,
                     'code': state.token.code
                   }));
-        } else if (state is LoginLoadingState) {
-          Future.delayed(Duration.zero,
-                  () => UsDialogBuilder.loadLoadingDialog(context));
+        } else if (state is EmailConfirmationTokenState) {
+          log("${state.token.accessToken} - ${state.token.code}");
+          Future.delayed(
+              Duration.zero,
+                  () => context.pushNamed(routeNameVerifyTokenPage, extra: {
+                'process': 'VERIFY_EMAIL_ADDRESS',
+                'references': references,
+                'accessToken': state.token.accessToken,
+                'code': state.token.code
+              }));
         }
       },
       child: BlocBuilder<AuthCubit, AuthAppState>(
@@ -166,7 +178,7 @@ class Desktop extends StatelessWidget {
                                     ? SizedBox(
                                         height: 18,
                                         child: TextButton(
-                                            onPressed: () {},
+                                            onPressed: fEmailConfirmationTokenEvent,
                                             child: const Text(
                                               'Verifikasi Sekarang',
                                               style: TextStyle(

@@ -71,3 +71,22 @@ class ChangePasswordErrorState extends AuthState {
   @override
   List<Object?> get props => [];
 }
+
+class EmailConfirmationTokenState extends AuthState {
+  final Token token;
+
+  EmailConfirmationTokenState(this.token);
+
+  @override
+  List<Object?> get props => [token];
+}
+
+class VerifyEmailSuccessState extends AuthState {
+  @override
+  List<Object?> get props => [];
+}
+
+class VerifyEmailErrorState extends AuthState {
+  @override
+  List<Object?> get props => [];
+}

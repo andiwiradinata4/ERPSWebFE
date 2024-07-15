@@ -1,13 +1,17 @@
 import 'package:erps/app/components/us_app_bar.dart';
+import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
+import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
+import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
 import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-/// PROCESS : RESET_PASSWORD | CHANGE_PASSWORD | CHANGE_PHONE_NUMBER
+/// PROCESS : RESET_PASSWORD | CHANGE_PASSWORD | CHANGE_PHONE_NUMBER / VERIFY_EMAIL_ADDRESS / VERIFY_PHONE_NUMBER
 
 class VerifyTokenPage extends StatelessWidget {
   final String process;
@@ -73,9 +77,13 @@ class Default extends StatefulWidget {
 class _DefaultState extends State<Default> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController codeController = TextEditingController();
+  late AuthBloc _authBloc;
 
   @override
   void initState() {
+    /// Get Auth Bloc
+    _authBloc = context.read<AuthBloc>();
+
     super.initState();
   }
 
@@ -100,6 +108,10 @@ class _DefaultState extends State<Default> {
           'accessToken': widget.accessToken,
           'code': widget.code
         });
+      } else if (widget.process == "VERIFY_EMAIL_ADDRESS") {
+        _authBloc.add(VerifyEmailConfirmationEvent(
+            data: VerifyEmailConfirmationEntity(
+                token: widget.accessToken, code: widget.code)));
       }
     }
   }
@@ -108,12 +120,34 @@ class _DefaultState extends State<Default> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: formKey,
-        child: (Responsive.isMobile(context))
-            ? mobileView(widget.references)
-            : desktopView(widget.references),
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (previousState, state) {
+        if (previousState is LoginLoadingState) {
+          UsDialogBuilder.dispose();
+        }
+        return true;
+      },
+      listener: ((context, state) {
+        if (state is VerifyEmailSuccessState) {
+          context.pop();
+        } else if (state is LoginErrorState) {
+          Future.delayed(Duration.zero, () {
+            UsSnackBarBuilder.showErrorSnackBar(context, state.message);
+          });
+        } else if (state is VerifyEmailErrorState) {
+          Future.delayed(Duration.zero, () {
+            UsSnackBarBuilder.showErrorSnackBar(
+                context, 'Gagal Verifikasi Email!');
+          });
+        }
+      }),
+      child: SingleChildScrollView(
+        child: Form(
+          key: formKey,
+          child: (Responsive.isMobile(context))
+              ? mobileView(widget.references)
+              : desktopView(widget.references),
+        ),
       ),
     );
   }

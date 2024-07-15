@@ -4,6 +4,7 @@ import 'package:erps/core/models/token.dart';
 import 'package:erps/features/auth/data/models/user.dart';
 import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
 import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
+import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
 import 'package:erps/features/auth/domain/services/v1/abs_auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,9 +18,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._service) : super(LoginUninitializedState()) {
     on<LoginAuthEvent>(_onLoginAuthEvent);
     on<MeEvent>(_onMeEvent);
-    on<ForgetPasswordTokenEvent>(_onForgetPasswordEvent);
+    on<ForgetPasswordTokenEvent>(_onForgetPasswordTokenEvent);
     on<ResetPasswordEvent>(_onResetPasswordEvent);
     on<ChangePasswordEvent>(_onChangePasswordEvent);
+    on<EmailConfirmationTokenEvent>(_onEmailConfirmationTokenEvent);
+    on<VerifyEmailConfirmationEvent>(_onVerifyEmailConfirmationEvent);
   }
 
   void _onLoginAuthEvent(LoginAuthEvent event, Emitter<AuthState> emit) async {
@@ -60,7 +63,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _onForgetPasswordEvent(
+  void _onForgetPasswordTokenEvent(
       ForgetPasswordTokenEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
@@ -102,10 +105,49 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ChangePasswordEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
-      bool success = await _service.changePassword(event.currentPassword, event.newPassword);
+      bool success = await _service.changePassword(
+          event.currentPassword, event.newPassword);
       (success)
           ? emit(ChangePasswordSuccessState())
           : emit(ChangePasswordErrorState());
+    } on ErrorResponseException catch (e) {
+      emit(LoginErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString()));
+    }
+  }
+
+  void _onEmailConfirmationTokenEvent(
+      EmailConfirmationTokenEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      Token token = await _service.emailConfirmationToken();
+      emit(EmailConfirmationTokenState(token));
+    } on ErrorResponseException catch (e) {
+      emit(LoginErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString()));
+    }
+  }
+
+  void _onVerifyEmailConfirmationEvent(
+      VerifyEmailConfirmationEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      bool success = await _service.verifyEmailConfirmation(event.data);
+      (success)
+          ? emit(VerifyEmailSuccessState())
+          : emit(VerifyEmailErrorState());
     } on ErrorResponseException catch (e) {
       emit(LoginErrorState(
           statusCode: e.statusCode,

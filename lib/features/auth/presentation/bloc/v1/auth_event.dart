@@ -50,3 +50,19 @@ class ChangePasswordEvent extends AuthEvent {
   @override
   List<Object?> get props => [currentPassword, newPassword];
 }
+
+class EmailConfirmationTokenEvent extends AuthEvent {
+  EmailConfirmationTokenEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class VerifyEmailConfirmationEvent extends AuthEvent {
+  final VerifyEmailConfirmationEntity data;
+
+  VerifyEmailConfirmationEvent({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
