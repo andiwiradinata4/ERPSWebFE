@@ -111,7 +111,7 @@ class _DefaultState extends State<Default> {
       } else if (widget.process == "VERIFY_EMAIL_ADDRESS") {
         _authBloc.add(VerifyEmailConfirmationEvent(
             data: VerifyEmailConfirmationEntity(
-                token: widget.accessToken, code: widget.code)));
+                accessToken: widget.accessToken, code: widget.code)));
       }
     }
   }

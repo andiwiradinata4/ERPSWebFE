@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:js_interop';
 import 'package:erps/core/models/response.dart';
 
 class ErrorResponseException implements Exception {
@@ -24,10 +26,22 @@ class ErrorResponseException implements Exception {
     late Map<String, List<String>> errorMsg;
     if (errors.containsKey("errors")) {
       errorMsg = {};
-      Map<String, dynamic> tempErrors = errors["errors"];
+      String allMessages = '';
+      final tempErrors = errors["errors"];
       for (String key in tempErrors.keys) {
-        errorMsg[key] = List<String>.from(tempErrors[key]);
+        final errorValues = tempErrors[key];
+        if (errorValues is JSArray)
+          {
+            final toDartValues = errorValues.toDart;
+            final jsArray = errorValues.toString();
+            log(jsArray);
+
+            errorMsg[key] = toDartValues.map((e) => e.toString()).toList();
+            allMessages += toDartValues.map((e) => e.toString()).toList().join(",");
+          }
+        errors.addAll({'error': allMessages});
       }
+
     } else if (errors.containsKey('detail')) {
       errorMsg = {};
       errors.addAll({'error': errors["detail"]});

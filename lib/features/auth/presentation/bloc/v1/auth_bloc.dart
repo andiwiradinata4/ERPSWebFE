@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:erps/core/error/error_response_exception.dart';
 import 'package:erps/core/models/token.dart';
@@ -149,12 +151,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           ? emit(VerifyEmailSuccessState())
           : emit(VerifyEmailErrorState());
     } on ErrorResponseException catch (e) {
+      log(e.errors.values.join(","));
       emit(LoginErrorState(
           statusCode: e.statusCode,
-          message: e.errors.values.first
-              .toString()
-              .replaceAll('[', '')
-              .replaceAll(']', '')));
+          message: e.errors.values.join(",").replaceAll("[", "").replaceAll("]", "")));
     } catch (e) {
       emit(LoginErrorState(message: e.toString()));
     }

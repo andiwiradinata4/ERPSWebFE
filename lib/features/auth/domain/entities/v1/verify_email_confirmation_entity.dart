@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 class VerifyEmailConfirmationEntity extends Equatable {
-  final String token;
+  final String accessToken;
   final String code;
 
-  const VerifyEmailConfirmationEntity({required this.token, required this.code});
+  const VerifyEmailConfirmationEntity({required this.accessToken, required this.code});
 
-  Map<String, dynamic> toJson() => {"Token": token, "Code": code};
+  Map<String, dynamic> toJson() => {"AccessToken": accessToken, "Code": code};
 
   @override
   // TODO: implement props
-  List<Object?> get props => [token, code];
+  List<Object?> get props => [accessToken, code];
 }
