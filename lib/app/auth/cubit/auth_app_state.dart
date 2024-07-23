@@ -17,3 +17,12 @@ class Authenticated extends AuthAppState {
   @override
   List<Object?> get props => [user];
 }
+
+class Refresh extends AuthAppState {
+  final User user;
+
+  const Refresh(this.user);
+
+  @override
+  List<Object?> get props => [user];
+}

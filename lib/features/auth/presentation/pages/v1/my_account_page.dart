@@ -25,9 +25,14 @@ class MyAccountPage extends StatelessWidget {
   }
 }
 
-class Desktop extends StatelessWidget {
+class Desktop extends StatefulWidget {
   const Desktop({super.key});
 
+  @override
+  State<Desktop> createState() => _DesktopState();
+}
+
+class _DesktopState extends State<Desktop> {
   @override
   Widget build(BuildContext context) {
     AuthCubit authCubit = context.read<AuthCubit>();
@@ -43,7 +48,8 @@ class Desktop extends StatelessWidget {
       context.pushNamed(routeNameChangePasswordPage);
     }
 
-    void fEmailConfirmationTokenEvent() => authBloc.add(EmailConfirmationTokenEvent());
+    void fEmailConfirmationTokenEvent() =>
+        authBloc.add(EmailConfirmationTokenEvent());
 
     return BlocListener<AuthBloc, AuthState>(
       listenWhen: (previousState, state) {
@@ -54,8 +60,8 @@ class Desktop extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is LoginLoadingState) {
-          Future.delayed(Duration.zero,
-                  () => UsDialogBuilder.loadLoadingDialog(context));
+          Future.delayed(
+              Duration.zero, () => UsDialogBuilder.loadLoadingDialog(context));
         } else if (state is ForgetPasswordTokenState) {
           log("${state.token.accessToken} - ${state.token.code}");
           Future.delayed(
@@ -70,12 +76,16 @@ class Desktop extends StatelessWidget {
           log("${state.token.accessToken} - ${state.token.code}");
           Future.delayed(
               Duration.zero,
-                  () => context.pushNamed(routeNameVerifyTokenPage, extra: {
-                'process': 'VERIFY_EMAIL_ADDRESS',
-                'references': references,
-                'accessToken': state.token.accessToken,
-                'code': state.token.code
-              }));
+              () => context.pushNamed(routeNameVerifyTokenPage, extra: {
+                    'process': 'VERIFY_EMAIL_ADDRESS',
+                    'references': references,
+                    'accessToken': state.token.accessToken,
+                    'code': state.token.code
+                  }));
+        } else if (state is VerifyEmailSuccessState) {
+          setState(() {
+            authCubit.setAsAuthenticated(state.user);
+          });
         }
       },
       child: BlocBuilder<AuthCubit, AuthAppState>(
@@ -178,7 +188,8 @@ class Desktop extends StatelessWidget {
                                     ? SizedBox(
                                         height: 18,
                                         child: TextButton(
-                                            onPressed: fEmailConfirmationTokenEvent,
+                                            onPressed:
+                                                fEmailConfirmationTokenEvent,
                                             child: const Text(
                                               'Verifikasi Sekarang',
                                               style: TextStyle(

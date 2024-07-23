@@ -1,3 +1,4 @@
+import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/us_app_bar.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
@@ -129,7 +130,10 @@ class _DefaultState extends State<Default> {
       },
       listener: ((context, state) {
         if (state is VerifyEmailSuccessState) {
-          context.pop();
+          setState(() {
+            AuthCubit().setAsAuthenticated(state.user);
+            context.pop();
+          });
         } else if (state is LoginErrorState) {
           Future.delayed(Duration.zero, () {
             UsSnackBarBuilder.showErrorSnackBar(context, state.message);

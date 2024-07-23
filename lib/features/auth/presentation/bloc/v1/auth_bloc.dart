@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
+import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/core/error/error_response_exception.dart';
 import 'package:erps/core/models/token.dart';
 import 'package:erps/features/auth/data/models/user.dart';
@@ -147,8 +148,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(LoginLoadingState());
     try {
       bool success = await _service.verifyEmailConfirmation(event.data);
+      User user = await _service.me();
       (success)
-          ? emit(VerifyEmailSuccessState())
+          ? emit(VerifyEmailSuccessState(user))
           : emit(VerifyEmailErrorState());
     } on ErrorResponseException catch (e) {
       log(e.errors.values.join(","));

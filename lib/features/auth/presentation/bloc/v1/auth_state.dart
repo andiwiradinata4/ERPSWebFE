@@ -82,8 +82,11 @@ class EmailConfirmationTokenState extends AuthState {
 }
 
 class VerifyEmailSuccessState extends AuthState {
+  final User user;
+
+  VerifyEmailSuccessState(this.user);
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [user];
 }
 
 class VerifyEmailErrorState extends AuthState {

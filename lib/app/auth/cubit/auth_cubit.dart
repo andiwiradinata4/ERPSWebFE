@@ -11,6 +11,10 @@ class AuthCubit extends Cubit<AuthAppState> {
     emit(Authenticated(user));
   }
 
+  Future<void> refreshUser(User user) async {
+    emit(Refresh(user));
+  }
+
   Future<void> setAsAnonymous() async {
     emit(Anonymous());
   }
