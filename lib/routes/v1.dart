@@ -6,7 +6,7 @@ import 'package:erps/features/auth/presentation/pages/v1/forget_password_page.da
 import 'package:erps/features/auth/presentation/pages/v1/my_account_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/verify_token_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/login_page.dart';
-import 'package:erps/features/home/presentation/pages/home_page.dart';
+import 'package:erps/features/home/presentation/pages/v1/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
