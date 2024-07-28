@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
+import 'package:erps/features/home/data/models/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -23,10 +24,9 @@ class Desktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> all = [];
-    for (int i = 1; i < 101; i++) {
-      (i == 100) ? all.add('Feature ERPS ABCD $i') : all.add('Feature $i');
-    }
+    List<Menu> all = [];
+    all.add(const Menu(
+        id: 1, name: 'User', route: 'User', iconName: 'account_primary'));
     return Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight,
@@ -37,16 +37,20 @@ class Desktop extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
           crossAxisCount: 8,
-          children:
-              all.map((e) => Center(child: FeatureCard(name: e))).toList(),
+          children: all
+              .map((e) => Center(
+                      child: FeatureCard(
+                    data: e,
+                  )))
+              .toList(),
         ));
   }
 }
 
 class FeatureCard extends StatelessWidget {
-  final String name;
+  final Menu data;
 
-  const FeatureCard({super.key, required this.name});
+  const FeatureCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +61,7 @@ class FeatureCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         splashColor: Theme.of(context).primaryColor.withOpacity(0.2),
         onTap: () {
-          log('Press $name');
+          log('Press ${data.name}');
         },
         child: Container(
           alignment: Alignment.center,
@@ -69,11 +73,11 @@ class FeatureCard extends StatelessWidget {
             children: [
               Expanded(
                   child: SvgPicture.asset(
-                'lib/assets/svg/edit_primary.svg',
-                width: 30,
+                'lib/assets/svg/${data.iconName}.svg',
+                width: 70,
               )),
               Text(
-                name,
+                data.name,
                 textAlign: TextAlign.center,
               ),
             ],
