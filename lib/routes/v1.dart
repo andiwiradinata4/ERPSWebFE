@@ -3,6 +3,7 @@ import 'package:erps/app/components/wrapper.dart';
 import 'package:erps/features/auth/presentation/pages/v1/change_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/create_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/forget_password_page.dart';
+import 'package:erps/features/auth/presentation/pages/v1/list_account_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/my_account_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/verify_token_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/login_page.dart';
@@ -27,6 +28,7 @@ const String routePathVerifyTokenPage = '/verify-token';
 const String routePathCreatePasswordPage = '/create-password';
 const String routePathChangePasswordPage = '/change-password';
 const String routePathMyAccountPage = '/my-account';
+const String routePathListAccountPage = '/list-account';
 const String routePathMasterAccessPage = '/access';
 const String routePathMasterProgramPage = '/program';
 const String routePathMasterModulePage = '/module';
@@ -39,6 +41,7 @@ const String routeNameVerifyTokenPage = 'verify-token';
 const String routeNameCreatePasswordPage = 'create-password';
 const String routeNameChangePasswordPage = 'change-password';
 const String routeNameMyAccountPage = 'my-account';
+const String routeNameListAccountPage = 'list-account';
 const String routeNameMasterAccessPage = 'access';
 const String routeNameMasterProgramPage = 'program';
 const String routeNameMasterModulePage = 'module';
@@ -67,7 +70,7 @@ final appRouter = GoRouter(
     });
 
 void populateRoutes(
-    LocalKey scaffoldKey, ScrollController horizontalController) {
+    LocalKey scaffoldKey, ScrollController verticalController) {
   /// Home Page
   routerList.add(GoRoute(
       path: routePathHomePage,
@@ -75,7 +78,7 @@ void populateRoutes(
       pageBuilder: (context, state) {
         return FadeTransitionPage(
           child: Wrapper(
-            verticalController: horizontalController,
+            verticalController: verticalController,
             child: WrapperWidget(child: const HomePage()),
           ),
           key: scaffoldKey,
@@ -88,7 +91,7 @@ void populateRoutes(
       pageBuilder: (context, state) {
         return FadeTransitionPage(
           child: Wrapper(
-            verticalController: horizontalController,
+            verticalController: verticalController,
             // child: WrapperWidget(child: const AccessScreen()),
           ),
           key: scaffoldKey,
@@ -173,7 +176,7 @@ void populateRoutes(
       pageBuilder: (context, state) {
         return FadeTransitionPage(
           child: Wrapper(
-            verticalController: horizontalController,
+            verticalController: verticalController,
             child: WrapperWidget(child: const MyAccountPage()),
           ),
           key: scaffoldKey,
@@ -189,6 +192,20 @@ void populateRoutes(
           if (extra is Map<String, String>) {}
         }
         return const ChangePasswordPage();
+      }));
+
+  /// List Account Page
+  routerList.add(GoRoute(
+      path: routePathListAccountPage,
+      name: routeNameListAccountPage,
+      pageBuilder: (context, state) {
+        return FadeTransitionPage(
+          child: Wrapper(
+            verticalController: verticalController,
+            child: WrapperWidget(child: const ListAccountPage()),
+          ),
+          key: scaffoldKey,
+        );
       }));
 }
 

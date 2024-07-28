@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
 import 'package:erps/features/home/data/models/menu.dart';
+import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -26,7 +28,10 @@ class Desktop extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Menu> all = [];
     all.add(const Menu(
-        id: 1, name: 'User', route: 'User', iconName: 'account_primary'));
+        id: 1,
+        name: 'User',
+        route: routeNameListAccountPage,
+        iconName: 'account_primary'));
     return Container(
         width: SizeConfig.screenWidth,
         height: SizeConfig.screenHeight,
@@ -61,7 +66,7 @@ class FeatureCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         splashColor: Theme.of(context).primaryColor.withOpacity(0.2),
         onTap: () {
-          log('Press ${data.name}');
+          context.goNamed(data.route);
         },
         child: Container(
           alignment: Alignment.center,
