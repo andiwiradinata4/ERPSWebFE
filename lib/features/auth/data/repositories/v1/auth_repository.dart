@@ -244,4 +244,58 @@ class AuthRepository implements AbsAuthRepository {
     }
     return user;
   }
+
+  @override
+  Future<User> getDetail(String id) async {
+    final User user;
+    String url = '/api/v1/auth/$id';
+    try {
+      final response = await client.get(url);
+      if (HTTPStatus.isSuccess(response.statusCode)) {
+        final json = jsonDecode(response.body);
+        user = User.fromJson(json['Data']);
+      } else {
+        throw (ErrorResponseException.fromHttpResponse(response));
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return user;
+  }
+
+  @override
+  Future<List<User>> listData(Map<String, String>? query) async {
+    List<User> data = [];
+    String url = '/api/v1/auth';
+    try {
+      final response = query == null ? await client.get(url) : await client.post(url, query);
+      if (HTTPStatus.isSuccess(response.statusCode)) {
+        final json = jsonDecode(response.body);
+        data = (json['Data'] as List).map((e) => User.fromJson(e)).toList();
+      } else {
+        throw (ErrorResponseException.fromHttpResponse(response));
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return data;
+  }
+
+  @override
+  Future<bool> delete(String id) async {
+    bool isSuccess;
+    String url = '/api/v1/auth/$id';
+    try {
+      final response = await client.delete(url, {});
+      if (HTTPStatus.isSuccess(response.statusCode)) {
+        isSuccess = true;
+      } else {
+        throw (ErrorResponseException.fromHttpResponse(response));
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return isSuccess;
+  }
+
 }

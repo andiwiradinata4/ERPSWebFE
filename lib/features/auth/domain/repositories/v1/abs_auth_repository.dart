@@ -33,4 +33,11 @@ abstract class AbsAuthRepository {
   Future<bool> changePassword(String currentPassword, String newPassword);
 
   Future<User> me();
+
+  Future<User> getDetail(String id);
+
+  Future<List<User>> listData(Map<String, String>? query);
+
+  Future<bool> delete(String id);
+
 }
