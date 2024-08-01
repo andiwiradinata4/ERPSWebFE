@@ -146,4 +146,9 @@ class AuthService implements AbsAuthService {
   deleteToken() {
     localRepo.delete();
   }
+
+  @override
+  Future<List<User>> listData(Map<String, String>? queries) async {
+    return await repo.listData(queries);
+  }
 }

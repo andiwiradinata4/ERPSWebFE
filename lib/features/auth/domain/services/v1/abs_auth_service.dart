@@ -37,4 +37,6 @@ abstract class AbsAuthService {
   Future<bool> changePassword(String currentPassword, String newPassword);
 
   Future<User> me();
+
+  Future<List<User>> listData(Map<String, String>? queries);
 }

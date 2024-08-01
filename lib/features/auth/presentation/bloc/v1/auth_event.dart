@@ -66,3 +66,12 @@ class VerifyEmailConfirmationEvent extends AuthEvent {
   @override
   List<Object?> get props => [data];
 }
+
+class ListDataEvent extends AuthEvent {
+  final Map<String, String>? queries;
+
+  ListDataEvent({this.queries});
+
+  @override
+  List<Object?> get props => [queries];
+}

@@ -85,6 +85,7 @@ class VerifyEmailSuccessState extends AuthState {
   final User user;
 
   VerifyEmailSuccessState(this.user);
+
   @override
   List<Object?> get props => [user];
 }
@@ -92,4 +93,23 @@ class VerifyEmailSuccessState extends AuthState {
 class VerifyEmailErrorState extends AuthState {
   @override
   List<Object?> get props => [];
+}
+
+class ListDataSuccessState extends AuthState {
+  final List<User> data;
+
+  ListDataSuccessState(this.data);
+
+  @override
+  List<Object?> get props => [data];
+}
+
+class ListDataErrorState extends AuthState {
+  final int statusCode;
+  final String message;
+
+  ListDataErrorState({this.statusCode = 0, required this.message});
+
+  @override
+  List<Object?> get props => [statusCode, message];
 }

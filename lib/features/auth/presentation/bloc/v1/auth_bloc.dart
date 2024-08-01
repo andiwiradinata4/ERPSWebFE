@@ -26,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ChangePasswordEvent>(_onChangePasswordEvent);
     on<EmailConfirmationTokenEvent>(_onEmailConfirmationTokenEvent);
     on<VerifyEmailConfirmationEvent>(_onVerifyEmailConfirmationEvent);
+    on<ListDataEvent>(_onListDataEvent);
   }
 
   void _onLoginAuthEvent(LoginAuthEvent event, Emitter<AuthState> emit) async {
@@ -156,7 +157,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       log(e.errors.values.join(","));
       emit(LoginErrorState(
           statusCode: e.statusCode,
-          message: e.errors.values.join(",").replaceAll("[", "").replaceAll("]", "")));
+          message: e.errors.values
+              .join(",")
+              .replaceAll("[", "")
+              .replaceAll("]", "")));
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString()));
+    }
+  }
+
+  void _onListDataEvent(ListDataEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      List<User> data = await _service.listData(event.queries);
+      emit(ListDataSuccessState(data));
+    } on ErrorResponseException catch (e) {
+      emit(ListDataErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
     } catch (e) {
       emit(LoginErrorState(message: e.toString()));
     }

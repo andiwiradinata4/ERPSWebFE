@@ -33,24 +33,31 @@ class Desktop extends StatefulWidget {
 }
 
 class _DesktopState extends State<Desktop> {
+  late AuthCubit authCubit;
+  late AuthBloc authBloc;
+  String references = '';
+
+  @override
+  void initState() {
+    authCubit = context.read<AuthCubit>();
+    authBloc = context.read<AuthBloc>();
+    super.initState();
+  }
+
+  void fResetPassword(String email) {
+    references = email;
+    authBloc.add(ForgetPasswordTokenEvent(email: email));
+  }
+
+  void fChangePassword() {
+    context.pushNamed(routeNameChangePasswordPage);
+  }
+
+  void fEmailConfirmationTokenEvent() =>
+      authBloc.add(EmailConfirmationTokenEvent());
+
   @override
   Widget build(BuildContext context) {
-    AuthCubit authCubit = context.read<AuthCubit>();
-    AuthBloc authBloc = context.read<AuthBloc>();
-    String references = '';
-
-    void fResetPassword(String email) {
-      references = email;
-      authBloc.add(ForgetPasswordTokenEvent(email: email));
-    }
-
-    void fChangePassword() {
-      context.pushNamed(routeNameChangePasswordPage);
-    }
-
-    void fEmailConfirmationTokenEvent() =>
-        authBloc.add(EmailConfirmationTokenEvent());
-
     return BlocListener<AuthBloc, AuthState>(
       listenWhen: (previousState, state) {
         if (previousState is LoginLoadingState) {

@@ -264,11 +264,11 @@ class AuthRepository implements AbsAuthRepository {
   }
 
   @override
-  Future<List<User>> listData(Map<String, String>? query) async {
+  Future<List<User>> listData(Map<String, String>? queries) async {
     List<User> data = [];
     String url = '/api/v1/auth';
     try {
-      final response = query == null ? await client.get(url) : await client.post(url, query);
+      final response = queries == null ? await client.get(url) : await client.post(url, queries);
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
         data = (json['Data'] as List).map((e) => User.fromJson(e)).toList();
