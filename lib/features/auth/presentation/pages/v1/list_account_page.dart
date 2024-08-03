@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
+import 'package:erps/app/utils/config.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
 import 'package:erps/features/auth/data/models/user.dart';
@@ -47,6 +48,139 @@ class _DesktopState extends State<Desktop> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (previousState, state) {
+        if (previousState is LoginLoadingState) {
+          UsDialogBuilder.dispose();
+        }
+        return true;
+      },
+      listener: ((context, state) {
+        if (state is LoginErrorState) {
+          Future.delayed(Duration.zero, () {
+            UsSnackBarBuilder.showErrorSnackBar(context, state.message);
+          });
+        } else if (state is LoginLoadingState) {
+          Future.delayed(
+              Duration.zero, () => UsDialogBuilder.loadLoadingDialog(context));
+        } else if (state is ListDataErrorState) {
+          Future.delayed(Duration.zero, () {
+            UsSnackBarBuilder.showErrorSnackBar(context, state.message);
+          });
+        } else if (state is ListDataSuccessState) {
+          if (mounted) {
+            setState(() {
+              data += state.data;
+            });
+          }
+        }
+      }),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: SizeConfig.screenHeight * 0.15,
+            child: const Center(
+                child: Text(
+                    "Title, Action Button, Search Bar and Navigation Back")),
+          ),
+          SizedBox(
+            width: SizeConfig.screenWidth * 0.85,
+            height: SizeConfig.screenHeight * 0.8,
+            child: Scrollbar(
+              thumbVisibility: true,
+              trackVisibility: false,
+              controller: horizontalController,
+              child: SingleChildScrollView(
+                controller: horizontalController,
+                scrollDirection: Axis.horizontal,
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  trackVisibility: false,
+                  controller: verticalController,
+                  child: SingleChildScrollView(
+                    controller: verticalController,
+                    scrollDirection: Axis.vertical,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(
+                          label: Expanded(child: SelectableText('#')),
+                        ),
+                        DataColumn(
+                          label: Expanded(child: SelectableText('First Name')),
+                        ),
+                        DataColumn(accep
+                          label: Expanded(child: SelectableText('Last Name')),
+                        ),
+                        DataColumn(
+                          label: Expanded(child: SelectableText('Birth Date')),
+                        ),
+                        DataColumn(
+                          label: Expanded(child: SelectableText('Username')),
+                        ),
+                        DataColumn(
+                          label: Expanded(
+                              child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child:
+                                      SelectableText('Normalized Username'))),
+                        ),
+                        DataColumn(
+                          label: Expanded(child: SelectableText('Email')),
+                        ),
+                        DataColumn(
+                          label: Expanded(
+                              child: SelectableText('Normalized Email')),
+                        ),
+                        DataColumn(
+                          label:
+                              Expanded(child: SelectableText('Phone Number')),
+                        ),
+                      ],
+                      rows: data
+                          .map((e) => DataRow(cells: [
+                                DataCell(Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {},
+                                        tooltip: 'Edit',
+                                        icon: Icon(
+                                          Icons.edit_rounded,
+                                          color: Theme.of(context).primaryColor,
+                                        )),
+                                    IconButton(
+                                        onPressed: () {},
+                                        tooltip: 'Hapus',
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: bgError,
+                                        )),
+                                  ],
+                                )),
+                                DataCell(SelectableText(e.firstName)),
+                                DataCell(SelectableText(e.lastName)),
+                                DataCell(
+                                    SelectableText(e.birthDate.toString())),
+                                DataCell(SelectableText(e.userName)),
+                                DataCell(SelectableText(e.normalizedUsername)),
+                                DataCell(SelectableText(e.email)),
+                                DataCell(SelectableText(e.normalizedEmail)),
+                                DataCell(SelectableText(e.phoneNumber)),
+                              ]))
+                          .toList(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
     return BlocBuilder<AuthBloc, AuthState>(
         bloc: authBloc,
         builder: (BuildContext context, AuthState state) {
@@ -92,9 +226,6 @@ class _DesktopState extends State<Desktop> {
                               label: Expanded(child: SelectableText('#')),
                             ),
                             DataColumn(
-                              label: Expanded(child: SelectableText('Id')),
-                            ),
-                            DataColumn(
                               label:
                                   Expanded(child: SelectableText('First Name')),
                             ),
@@ -133,7 +264,6 @@ class _DesktopState extends State<Desktop> {
                               .map((e) => DataRow(cells: [
                                     DataCell(SelectableText(
                                         (data.indexOf(e) + 1).toString())),
-                                    DataCell(SelectableText(e.id)),
                                     DataCell(SelectableText(e.firstName)),
                                     DataCell(SelectableText(e.lastName)),
                                     DataCell(
