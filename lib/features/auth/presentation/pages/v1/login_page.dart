@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
@@ -9,6 +11,7 @@ import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginPage extends StatefulWidget {
   final String redirectTo;
@@ -53,6 +56,7 @@ class _DefaultState extends State<Default> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   late AuthBloc _authBloc;
   late AuthCubit _authCubit;
@@ -76,15 +80,16 @@ class _DefaultState extends State<Default> {
     }
   }
 
-  void fForgetPassword() => GoRouter.of(context).pushNamed(routeNameForgetPasswordPage);
+  void fForgetPassword() =>
+      GoRouter.of(context).pushNamed(routeNameForgetPasswordPage);
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
         listenWhen: (previousState, state) {
-          if (previousState is LoginLoadingState) {
-            UsDialogBuilder.dispose();
-          }
+          // if (previousState is LoginLoadingState) {
+          //   UsDialogBuilder.dispose();
+          // }
           return true;
         },
         listener: ((context, state) {
@@ -93,10 +98,25 @@ class _DefaultState extends State<Default> {
               UsSnackBarBuilder.showErrorSnackBar(context, state.message);
             });
           } else if (state is LoginLoadingState) {
-            Future.delayed(Duration.zero,
-                () => UsDialogBuilder.loadLoadingDialog(context));
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
+            // Future.delayed(Duration.zero,
+            //     () => UsDialogBuilder.loadLoadingDialog(context));
           } else if (state is LoginSuccessState) {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
           } else if (state is SuccessGetDetailState) {
+            if (mounted) {
+              setState(() {
+                isLoading = false;
+              });
+            }
             _authCubit.setAsAuthenticated(state.user);
             if (widget.redirectTo.isNotEmpty) {
               GoRouter.of(context).pushReplacement(widget.redirectTo);
@@ -228,11 +248,14 @@ class _DefaultState extends State<Default> {
                         width: SizeConfig.screenWidth,
                         child: ElevatedButton(
                             onPressed: fLogin,
-                            child: const Text(
-                              'Masuk',
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w800),
-                            )),
+                            child: (isLoading)
+                                ? const RefreshProgressIndicator()
+                                : const Text(
+                                    'Masuk',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800),
+                                  )),
                       ),
                     ),
                   ),
@@ -312,6 +335,7 @@ class _DefaultState extends State<Default> {
                   activeSuffixIcon: Icons.visibility_outlined,
                   deActiveSuffixIcon: Icons.visibility_off_outlined,
                   isPasswordHandle: true,
+                  onFieldSubmitted: (String? value) => fLogin(),
                 ),
 
                 /// Spacer
@@ -343,12 +367,30 @@ class _DefaultState extends State<Default> {
                   child: SizedBox(
                     width: SizeConfig.screenWidth,
                     child: ElevatedButton(
-                        onPressed: fLogin,
-                        child: const Text(
-                          'Masuk',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w800),
-                        )),
+                        onPressed: (isLoading) ? () {} : fLogin,
+                        child: (isLoading)
+                            ? SizedBox(
+                                height: 30,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Loading ',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white),
+                                    ),
+                                    Lottie.asset(
+                                        'lib/assets/lottie/loading.json',
+                                        repeat: true),
+                                  ],
+                                ))
+                            : const Text(
+                                'Masuk',
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w800),
+                              )),
                   ),
                 ),
 

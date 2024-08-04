@@ -1,15 +1,17 @@
 import 'dart:developer';
 
+import 'package:erps/app/components/us_data_cell.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
 import 'package:erps/app/utils/config.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
+import 'package:erps/core/models/pagination.dart';
 import 'package:erps/features/auth/data/models/user.dart';
 import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ListAccountPage extends StatelessWidget {
   const ListAccountPage({super.key});
@@ -35,7 +37,9 @@ class Desktop extends StatefulWidget {
 class _DesktopState extends State<Desktop> {
   late AuthBloc authBloc;
   late ScrollController horizontalController, verticalController;
+  late List<DataColumn> allColumns = [];
   List<User> data = [];
+  PerPageValue selectedPerPageValue = initPerPageValue();
 
   @override
   void initState() {
@@ -44,6 +48,84 @@ class _DesktopState extends State<Desktop> {
     horizontalController = ScrollController();
     verticalController = ScrollController();
     super.initState();
+  }
+
+  List<DataColumn> setDataColumns() => const [
+        DataColumn(
+          label: Expanded(child: SelectableText('#')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('First Name')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Last Name')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Birth Date')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Username')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Normalized Username')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Email')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Normalized Email')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Email Confirmed')),
+        ),
+        DataColumn(
+          label: Expanded(child: SelectableText('Phone Number')),
+        ),
+      ];
+
+  List<Widget> setActionRowButton(User data) => [
+        IconButton(
+            iconSize: 18,
+            onPressed: () {
+              log('${data.firstName} ${data.lastName} - ${data.userName}');
+            },
+            tooltip: 'Edit',
+            icon: Icon(
+              Icons.edit_rounded,
+              color: Theme.of(context).primaryColor,
+            )),
+        IconButton(
+            iconSize: 18,
+            onPressed: () {},
+            tooltip: 'Hapus',
+            icon: const Icon(
+              Icons.delete,
+              color: bgError,
+            )),
+      ];
+
+  DataRow setDataRow(User e) {
+    return DataRow(selected: e.isSelected, cells: [
+      DataCell(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: setActionRowButton(e),
+      )),
+      usDataCell(e.firstName, ColumnType.gString),
+      usDataCell(e.lastName, ColumnType.gString),
+      usDataCell(e.birthDate, ColumnType.gSmallDate),
+      usDataCell(e.userName, ColumnType.gString),
+      usDataCell(e.normalizedUsername, ColumnType.gString),
+      usDataCell(e.email, ColumnType.gString),
+      usDataCell(e.normalizedEmail, ColumnType.gString),
+      usDataCell(e.emailConfirmed, ColumnType.gBoolean),
+      usDataCell(e.phoneNumber, ColumnType.gString),
+    ]);
+  }
+
+  void refresh() {
+    data = [];
+    authBloc.add(ListDataEvent());
   }
 
   @override
@@ -75,216 +157,148 @@ class _DesktopState extends State<Desktop> {
           }
         }
       }),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.15,
-            child: const Center(
-                child: Text(
-                    "Title, Action Button, Search Bar and Navigation Back")),
-          ),
-          SizedBox(
-            width: SizeConfig.screenWidth * 0.85,
-            height: SizeConfig.screenHeight * 0.8,
-            child: Scrollbar(
-              thumbVisibility: true,
-              trackVisibility: false,
-              controller: horizontalController,
-              child: SingleChildScrollView(
-                controller: horizontalController,
-                scrollDirection: Axis.horizontal,
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  trackVisibility: false,
-                  controller: verticalController,
-                  child: SingleChildScrollView(
-                    controller: verticalController,
-                    scrollDirection: Axis.vertical,
-                    child: DataTable(
-                      columns: const [
-                        DataColumn(
-                          label: Expanded(child: SelectableText('#')),
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Header
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.15,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        const Text(
+                          "List User",
+                          style: TextStyle(
+                              fontSize: 40, fontWeight: FontWeight.w700),
                         ),
-                        DataColumn(
-                          label: Expanded(child: SelectableText('First Name')),
-                        ),
-                        DataColumn(accep
-                          label: Expanded(child: SelectableText('Last Name')),
-                        ),
-                        DataColumn(
-                          label: Expanded(child: SelectableText('Birth Date')),
-                        ),
-                        DataColumn(
-                          label: Expanded(child: SelectableText('Username')),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                              child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child:
-                                      SelectableText('Normalized Username'))),
-                        ),
-                        DataColumn(
-                          label: Expanded(child: SelectableText('Email')),
-                        ),
-                        DataColumn(
-                          label: Expanded(
-                              child: SelectableText('Normalized Email')),
-                        ),
-                        DataColumn(
-                          label:
-                              Expanded(child: SelectableText('Phone Number')),
-                        ),
-                      ],
-                      rows: data
-                          .map((e) => DataRow(cells: [
-                                DataCell(Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {},
-                                        tooltip: 'Edit',
-                                        icon: Icon(
-                                          Icons.edit_rounded,
-                                          color: Theme.of(context).primaryColor,
-                                        )),
-                                    IconButton(
-                                        onPressed: () {},
-                                        tooltip: 'Hapus',
-                                        icon: const Icon(
-                                          Icons.delete,
-                                          color: bgError,
-                                        )),
-                                  ],
-                                )),
-                                DataCell(SelectableText(e.firstName)),
-                                DataCell(SelectableText(e.lastName)),
-                                DataCell(
-                                    SelectableText(e.birthDate.toString())),
-                                DataCell(SelectableText(e.userName)),
-                                DataCell(SelectableText(e.normalizedUsername)),
-                                DataCell(SelectableText(e.email)),
-                                DataCell(SelectableText(e.normalizedEmail)),
-                                DataCell(SelectableText(e.phoneNumber)),
-                              ]))
-                          .toList(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return BlocBuilder<AuthBloc, AuthState>(
-        bloc: authBloc,
-        builder: (BuildContext context, AuthState state) {
-          if (state is ListDataErrorState) {
-            Future.delayed(Duration.zero, () {
-              UsSnackBarBuilder.showErrorSnackBar(context, state.message);
-            });
-          } else if (state is ListDataSuccessState) {
-            for (int i = 1; i < 10; i++) {
-              data += state.data;
-            }
-          }
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: SizeConfig.screenHeight * 0.15,
-                child: const Center(
-                    child: Text(
-                        "Title, Action Button, Search Bar and Navigation Back")),
-              ),
-              SizedBox(
-                width: SizeConfig.screenWidth * 0.85,
-                height: SizeConfig.screenHeight * 0.8,
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  trackVisibility: false,
-                  controller: horizontalController,
-                  child: SingleChildScrollView(
-                    controller: horizontalController,
-                    scrollDirection: Axis.horizontal,
-                    child: Scrollbar(
-                      thumbVisibility: true,
-                      trackVisibility: false,
-                      controller: verticalController,
-                      child: SingleChildScrollView(
-                        controller: verticalController,
-                        scrollDirection: Axis.vertical,
-                        child: DataTable(
-                          columns: const [
-                            DataColumn(
-                              label: Expanded(child: SelectableText('#')),
+                        Row(
+                          children: [
+                            Container(
+                              height: 35,
+                              padding: const EdgeInsets.only(left: 18),
+                              child: ElevatedButton.icon(
+                                icon: SvgPicture.asset(
+                                    'lib/assets/svg/new_white.svg'),
+                                label: const Text('Baru'),
+                                onPressed: () {},
+                              ),
                             ),
-                            DataColumn(
-                              label:
-                                  Expanded(child: SelectableText('First Name')),
-                            ),
-                            DataColumn(
-                              label:
-                                  Expanded(child: SelectableText('Last Name')),
-                            ),
-                            DataColumn(
-                              label:
-                                  Expanded(child: SelectableText('Birth Date')),
-                            ),
-                            DataColumn(
-                              label:
-                                  Expanded(child: SelectableText('Username')),
-                            ),
-                            DataColumn(
-                              label: Expanded(
-                                  child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: SelectableText(
-                                          'Normalized Username'))),
-                            ),
-                            DataColumn(
-                              label: Expanded(child: SelectableText('Email')),
-                            ),
-                            DataColumn(
-                              label: Expanded(
-                                  child: SelectableText('Normalized Email')),
-                            ),
-                            DataColumn(
-                              label: Expanded(
-                                  child: SelectableText('Phone Number')),
+                            Container(
+                              height: 35,
+                              padding: const EdgeInsets.only(left: 9),
+                              child: ElevatedButton.icon(
+                                icon: SvgPicture.asset(
+                                    'lib/assets/svg/refresh_white.svg'),
+                                label: const Text('Refresh'),
+                                onPressed: refresh,
+                              ),
                             ),
                           ],
-                          rows: data
-                              .map((e) => DataRow(cells: [
-                                    DataCell(SelectableText(
-                                        (data.indexOf(e) + 1).toString())),
-                                    DataCell(SelectableText(e.firstName)),
-                                    DataCell(SelectableText(e.lastName)),
-                                    DataCell(
-                                        SelectableText(e.birthDate.toString())),
-                                    DataCell(SelectableText(e.userName)),
-                                    DataCell(
-                                        SelectableText(e.normalizedUsername)),
-                                    DataCell(SelectableText(e.email)),
-                                    DataCell(SelectableText(e.normalizedEmail)),
-                                    DataCell(SelectableText(e.phoneNumber)),
-                                  ]))
-                              .toList(),
                         ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: SizeConfig.screenWidth * 0.4,
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Search',
+                        border: OutlineInputBorder(),
+                      ),
+                      onSubmitted: (String? value) {
+                        log(value ?? 'Search');
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+            /// Body
+            SizedBox(
+              width: SizeConfig.screenWidth * 0.85,
+              height: SizeConfig.screenHeight * 0.8,
+              child: Scrollbar(
+                thumbVisibility: true,
+                trackVisibility: false,
+                controller: horizontalController,
+                child: SingleChildScrollView(
+                  controller: horizontalController,
+                  scrollDirection: Axis.horizontal,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    trackVisibility: false,
+                    controller: verticalController,
+                    child: SingleChildScrollView(
+                      controller: verticalController,
+                      scrollDirection: Axis.vertical,
+                      child: DataTable(
+                        columns: setDataColumns(),
+                        rows: data.map((e) => setDataRow(e)).toList(),
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
-          );
-        });
+            ),
+
+            /// Footer
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.05,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Theme.of(context).primaryColor.withOpacity(0.8),
+                      )),
+                  const Text('1 - 100'),
+                  IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.arrow_forward_ios_rounded,
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.8))),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 9.0),
+                    child: DropdownButton<PerPageValue>(
+                      style: Theme.of(context).textTheme.labelLarge,
+                      value: selectedPerPageValue,
+                      items: dataPerPageValue()
+                          .map<DropdownMenuItem<PerPageValue>>(
+                              (PerPageValue value) {
+                        return DropdownMenuItem<PerPageValue>(
+                          value: value,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 9.0),
+                            child: Text(value.label),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (PerPageValue? value) {
+                        if (mounted) {
+                          setState(() {
+                            selectedPerPageValue = value!;
+                          });
+                        }
+                      },
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 

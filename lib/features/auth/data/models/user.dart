@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:erps/core/utils/date_util.dart';
 
+// ignore: must_be_immutable
 class User extends Equatable {
   final String id;
   final String firstName;
@@ -19,8 +20,9 @@ class User extends Equatable {
   final bool twoFactorEnabled;
   final bool lockoutEnabled;
   final int accessFailedCount;
+  bool isSelected;
 
-  const User(
+  User(
       {required this.id,
       required this.firstName,
       required this.lastName,
@@ -37,13 +39,16 @@ class User extends Equatable {
       this.phoneNumberConfirmed = false,
       this.twoFactorEnabled = false,
       this.lockoutEnabled = false,
-      this.accessFailedCount = 0});
+      this.accessFailedCount = 0,
+      this.isSelected = false});
 
   factory User.fromJson(Map<String, dynamic> json) => User(
       id: json['Id'] ?? '',
       firstName: json['FirstName'] ?? '',
       lastName: json['LastName'] ?? '',
-      birthDate: (json['BirthDate'] == null) ? DateTime.utc(2000) : DateUtil().parse(json['BirthDate']),
+      birthDate: (json['BirthDate'] == null)
+          ? DateTime.utc(2000)
+          : DateUtil().parse(json['BirthDate']),
       userName: json['UserName'] ?? '',
       normalizedUsername: json['NormalizedUsername'] ?? '',
       email: json['Email'] ?? '',
@@ -79,7 +84,6 @@ class User extends Equatable {
       };
 
   @override
-  // TODO: implement props
   List<Object?> get props => [
         id,
         firstName,
@@ -97,6 +101,7 @@ class User extends Equatable {
         phoneNumberConfirmed,
         twoFactorEnabled,
         lockoutEnabled,
-        accessFailedCount
+        accessFailedCount,
+        isSelected
       ];
 }

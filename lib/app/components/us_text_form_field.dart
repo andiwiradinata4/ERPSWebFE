@@ -12,20 +12,22 @@ class UsTextFormField extends StatefulWidget {
   final bool isPasswordHandle;
   final String hintText;
   final bool autoFocus;
+  final Function(String?)? onFieldSubmitted;
 
   const UsTextFormField(
       {super.key,
-        required this.usController,
-        required this.fieldName,
-        required this.validateValue,
-        this.textInputType = TextInputType.text,
-        this.readOnly = false,
-        this.useSuffixIcon = false,
-        this.activeSuffixIcon,
-        this.deActiveSuffixIcon,
-        this.isPasswordHandle = false,
-        this.hintText = '',
-        this.autoFocus = false});
+      required this.usController,
+      required this.fieldName,
+      required this.validateValue,
+      this.textInputType = TextInputType.text,
+      this.readOnly = false,
+      this.useSuffixIcon = false,
+      this.activeSuffixIcon,
+      this.deActiveSuffixIcon,
+      this.isPasswordHandle = false,
+      this.hintText = '',
+      this.autoFocus = false,
+      this.onFieldSubmitted});
 
   @override
   State<UsTextFormField> createState() => _UsTextFormFieldState();
@@ -50,6 +52,7 @@ class _UsTextFormFieldState extends State<UsTextFormField> {
       cursorColor: Theme.of(context).primaryColor,
       obscureText: obscureText,
       autofocus: widget.autoFocus,
+      onFieldSubmitted: widget.onFieldSubmitted,
       decoration: InputDecoration(
           label: Text(widget.fieldName),
           hintText: widget.hintText,
@@ -58,27 +61,27 @@ class _UsTextFormFieldState extends State<UsTextFormField> {
           errorBorder: defaultOutlineInputBorder(),
           focusedErrorBorder: defaultOutlineInputBorder(),
           contentPadding:
-          const EdgeInsets.only(left: 30, right: 10, top: 13, bottom: 13),
+              const EdgeInsets.only(left: 30, right: 10, top: 13, bottom: 13),
           suffixIcon: (widget.useSuffixIcon)
               ? GestureDetector(
-            onTap: () {
-              setState(() {
-                isActive = !isActive;
-                (widget.isPasswordHandle)
-                    ? obscureText = !isActive
-                    : obscureText = false;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 18),
-              child: Icon(
-                (isActive)
-                    ? widget.activeSuffixIcon
-                    : widget.deActiveSuffixIcon,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-          )
+                  onTap: () {
+                    setState(() {
+                      isActive = !isActive;
+                      (widget.isPasswordHandle)
+                          ? obscureText = !isActive
+                          : obscureText = false;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 18),
+                    child: Icon(
+                      (isActive)
+                          ? widget.activeSuffixIcon
+                          : widget.deActiveSuffixIcon,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                )
               : null),
       validator: (String? value) => widget.validateValue(value),
     );
