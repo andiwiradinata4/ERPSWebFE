@@ -9,6 +9,5 @@ class VerifyEmailConfirmationEntity extends Equatable {
   Map<String, dynamic> toJson() => {"AccessToken": accessToken, "Code": code};
 
   @override
-  // TODO: implement props
   List<Object?> get props => [accessToken, code];
 }

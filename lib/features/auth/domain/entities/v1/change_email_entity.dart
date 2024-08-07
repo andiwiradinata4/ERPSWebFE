@@ -16,6 +16,5 @@ class ChangeEmailEntity extends Equatable {
       {"Email": email, "NewEmail": newEmail, "Token": token, "Code": code};
 
   @override
-  // TODO: implement props
   List<Object?> get props => [email, newEmail, token, code];
 }

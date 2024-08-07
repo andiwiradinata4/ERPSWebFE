@@ -26,7 +26,6 @@ class RegisterEntity extends Equatable {
       };
 
   @override
-  // TODO: implement props
   List<Object?> get props =>
       [userName, email, password, firstName, lastName, phoneNumber];
 }

@@ -9,6 +9,5 @@ class LoginEntity extends Equatable {
   Map<String, dynamic> toJson() => {"username": userName, "Password": password};
 
   @override
-  // TODO: implement props
   List<Object?> get props => [userName, password];
 }

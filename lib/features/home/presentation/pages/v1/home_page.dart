@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
 import 'package:erps/features/home/data/models/menu.dart';
@@ -17,6 +15,7 @@ class HomePage extends StatelessWidget {
     return const Responsive(
       desktop: Desktop(),
       mobile: Desktop(),
+      tablet: Desktop()      
     );
   }
 }
@@ -76,11 +75,13 @@ class FeatureCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(height: 8,) ,
               Expanded(
                   child: SvgPicture.asset(
                 'lib/assets/svg/${data.iconName}.svg',
                 width: 70,
               )),
+              const SizedBox(height: 8,),
               Text(
                 data.name,
                 textAlign: TextAlign.center,

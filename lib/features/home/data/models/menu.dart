@@ -20,6 +20,5 @@ class Menu extends Equatable {
       {'Id': id, 'Name': name, 'Route': route, 'IconName': iconName};
 
   @override
-  // TODO: implement props
   List<Object?> get props => [id, name, route, iconName];
 }

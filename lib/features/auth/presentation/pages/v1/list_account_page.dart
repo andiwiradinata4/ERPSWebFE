@@ -171,10 +171,10 @@ class _DesktopState extends State<Desktop> {
                   Expanded(
                     child: Row(
                       children: [
-                        const Text(
+                        Text(
                           "List User",
                           style: TextStyle(
-                              fontSize: 40, fontWeight: FontWeight.w700),
+                              fontSize: (Responsive.isDesktop(context)) ? 20 : 20, fontWeight: FontWeight.w700),
                         ),
                         Row(
                           children: [
@@ -204,7 +204,7 @@ class _DesktopState extends State<Desktop> {
                     ),
                   ),
                   Container(
-                    width: SizeConfig.screenWidth * 0.4,
+                    width: (Responsive.isDesktop(context) ) ? SizeConfig.screenWidth * 0.4 : SizeConfig.screenWidth * 0.2,
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: TextField(
                       decoration: const InputDecoration(

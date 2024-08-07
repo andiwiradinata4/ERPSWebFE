@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
-import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/core/error/error_response_exception.dart';
 import 'package:erps/core/models/token.dart';
 import 'package:erps/features/auth/data/models/user.dart';
