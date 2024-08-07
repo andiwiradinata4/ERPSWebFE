@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:erps/core/error/error_response_exception.dart';
+import 'package:erps/core/models/pagination.dart';
 import 'package:erps/core/models/token.dart';
 import 'package:erps/core/network/http/abstract/abs_http_client.dart';
 import 'package:erps/core/network/http/http_status.dart';
@@ -264,14 +265,22 @@ class AuthRepository implements AbsAuthRepository {
   }
 
   @override
-  Future<List<User>> listData(Map<String, String>? queries) async {
-    List<User> data = [];
+  Future<Pagination<User>> listData(Map<String, String>? queries) async {
+    Pagination<User> data = Pagination();
     String url = '/api/v1/auth';
     try {
-      final response = queries == null ? await client.get(url) : await client.post(url, queries);
+      final response = queries == null
+          ? await client.get(url)
+          : await client.post(url, queries);
       if (HTTPStatus.isSuccess(response.statusCode)) {
         final json = jsonDecode(response.body);
-        data = (json['Data'] as List).map((e) => User.fromJson(e)).toList();
+        data.count = json['Count'];
+        data.totalPage = json['TotalPage'];
+        data.results =
+            (json['Data'] as List).map((e) => User.fromJson(e)).toList();
+        data.jsonResults = json['Data'];
+
+        // data = (json['Data'] as List).map((e) => User.fromJson(e)).toList();
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }
@@ -297,5 +306,4 @@ class AuthRepository implements AbsAuthRepository {
     }
     return isSuccess;
   }
-
 }

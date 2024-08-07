@@ -38,13 +38,22 @@ class _DesktopState extends State<Desktop> {
   late AuthBloc authBloc;
   late ScrollController horizontalController, verticalController;
   late List<DataColumn> allColumns = [];
-  List<User> data = [];
+  Pagination<User> data = Pagination();
   PerPageValue selectedPerPageValue = initPerPageValue();
+  Map<String, String> queries = {};
+  int page = 1;
+  int perPage = 10;
+  int startAmount = 1;
+  int endAmount = 10;
+  int count = 0;
+  int totalPage = 0;
 
   @override
   void initState() {
+    queries = {'Page': page.toString(), 'PageSize': perPage.toString()};
+
     authBloc = context.read<AuthBloc>();
-    authBloc.add(ListDataEvent());
+    authBloc.add(ListDataEvent(queries: queries));
     horizontalController = ScrollController();
     verticalController = ScrollController();
     super.initState();
@@ -124,8 +133,30 @@ class _DesktopState extends State<Desktop> {
   }
 
   void refresh() {
-    data = [];
-    authBloc.add(ListDataEvent());
+    data.results = [];
+    authBloc.add(ListDataEvent(queries: queries));
+  }
+
+  void refreshRange() {
+    if (mounted) {
+      setState(() {
+        if (page == 1) {
+          startAmount = 1;
+          if (selectedPerPageValue.label == "All") {
+            endAmount = count;
+          } else {
+            endAmount = perPage;
+          }
+        } else {
+          startAmount = ((page - 1) * perPage) + 1;
+          if (selectedPerPageValue.label == "All") {
+            endAmount = count;
+          } else {
+            endAmount = startAmount + perPage;
+          }
+        }
+      });
+    }
   }
 
   @override
@@ -152,7 +183,9 @@ class _DesktopState extends State<Desktop> {
         } else if (state is ListDataSuccessState) {
           if (mounted) {
             setState(() {
-              data += state.data;
+              data = state.data;
+              count = state.data.count;
+              totalPage = state.data.totalPage;
             });
           }
         }
@@ -174,7 +207,9 @@ class _DesktopState extends State<Desktop> {
                         Text(
                           "List User",
                           style: TextStyle(
-                              fontSize: (Responsive.isDesktop(context)) ? 20 : 20, fontWeight: FontWeight.w700),
+                              fontSize:
+                                  (Responsive.isDesktop(context)) ? 20 : 20,
+                              fontWeight: FontWeight.w700),
                         ),
                         Row(
                           children: [
@@ -204,7 +239,9 @@ class _DesktopState extends State<Desktop> {
                     ),
                   ),
                   Container(
-                    width: (Responsive.isDesktop(context) ) ? SizeConfig.screenWidth * 0.4 : SizeConfig.screenWidth * 0.2,
+                    width: (Responsive.isDesktop(context))
+                        ? SizeConfig.screenWidth * 0.4
+                        : SizeConfig.screenWidth * 0.2,
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: TextField(
                       decoration: const InputDecoration(
@@ -240,7 +277,7 @@ class _DesktopState extends State<Desktop> {
                       scrollDirection: Axis.vertical,
                       child: DataTable(
                         columns: setDataColumns(),
-                        rows: data.map((e) => setDataRow(e)).toList(),
+                        rows: data.results.map((e) => setDataRow(e)).toList(),
                       ),
                     ),
                   ),
@@ -254,15 +291,24 @@ class _DesktopState extends State<Desktop> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Text('Page $page'),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (page == 1) return;
+                        page--;
+                        refreshRange();
+                      },
                       icon: Icon(
                         Icons.arrow_back_ios_rounded,
                         color: Theme.of(context).primaryColor.withOpacity(0.8),
                       )),
-                  const Text('1 - 100'),
+                  Text('$startAmount  - $endAmount'),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (page == totalPage) return;
+                        page++;
+                        refreshRange();
+                      },
                       icon: Icon(Icons.arrow_forward_ios_rounded,
                           color:
                               Theme.of(context).primaryColor.withOpacity(0.8))),
@@ -284,11 +330,11 @@ class _DesktopState extends State<Desktop> {
                         );
                       }).toList(),
                       onChanged: (PerPageValue? value) {
-                        if (mounted) {
-                          setState(() {
-                            selectedPerPageValue = value!;
-                          });
-                        }
+                        selectedPerPageValue = value!;
+                        perPage = selectedPerPageValue.pageValue;
+                        refreshRange();
+                        queries['PageSize'] = endAmount.toString();
+                        refresh();
                       },
                     ),
                   )

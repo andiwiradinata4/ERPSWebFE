@@ -1,3 +1,4 @@
+import 'package:erps/core/models/pagination.dart';
 import 'package:erps/core/models/token.dart';
 import 'package:erps/features/auth/data/models/user.dart';
 import 'package:erps/features/auth/domain/entities/v1/change_email_entity.dart';
@@ -38,5 +39,5 @@ abstract class AbsAuthService {
 
   Future<User> me();
 
-  Future<List<User>> listData(Map<String, String>? queries);
+  Future<Pagination<User>> listData(Map<String, String>? queries);
 }

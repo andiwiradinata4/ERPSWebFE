@@ -1,4 +1,5 @@
 import 'package:erps/core/domain/repositories/v1/abs_auth_local_repository.dart';
+import 'package:erps/core/models/pagination.dart';
 import 'package:erps/core/models/token.dart';
 import 'package:erps/core/network/http/abstract/abs_http_client.dart';
 import 'package:erps/features/auth/data/models/user.dart';
@@ -148,7 +149,7 @@ class AuthService implements AbsAuthService {
   }
 
   @override
-  Future<List<User>> listData(Map<String, String>? queries) async {
+  Future<Pagination<User>> listData(Map<String, String>? queries) async {
     return await repo.listData(queries);
   }
 }

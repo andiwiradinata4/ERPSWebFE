@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:erps/core/error/error_response_exception.dart';
+import 'package:erps/core/models/pagination.dart';
 import 'package:erps/core/models/token.dart';
 import 'package:erps/features/auth/data/models/user.dart';
 import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
@@ -168,7 +169,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onListDataEvent(ListDataEvent event, Emitter<AuthState> emit) async {
     emit(LoginLoadingState());
     try {
-      List<User> data = await _service.listData(event.queries);
+      Pagination<User> data = await _service.listData(event.queries);
       emit(ListDataSuccessState(data));
     } on ErrorResponseException catch (e) {
       emit(ListDataErrorState(

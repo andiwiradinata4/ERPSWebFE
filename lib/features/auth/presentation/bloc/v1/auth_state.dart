@@ -96,7 +96,7 @@ class VerifyEmailErrorState extends AuthState {
 }
 
 class ListDataSuccessState extends AuthState {
-  final List<User> data;
+  final Pagination<User> data;
 
   ListDataSuccessState(this.data);
 
