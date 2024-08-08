@@ -70,6 +70,7 @@ class _DefaultState extends State<Default> {
   }
 
   void fLogin() {
+    if (isLoading) return;
     if (formKey.currentState!.validate()) {
       _authBloc.add(LoginAuthEvent(
           username: usernameController.text.trim(),
@@ -97,7 +98,7 @@ class _DefaultState extends State<Default> {
           } else if (state is LoginLoadingState) {
             if (mounted) {
               setState(() {
-                isLoading = false;
+                isLoading = true;
               });
             }
             // Future.delayed(Duration.zero,
@@ -246,7 +247,23 @@ class _DefaultState extends State<Default> {
                         child: ElevatedButton(
                             onPressed: fLogin,
                             child: (isLoading)
-                                ? const RefreshProgressIndicator()
+                                ? SizedBox(
+                                height: 30,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Loading ',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white),
+                                    ),
+                                    Lottie.asset(
+                                        'lib/assets/lottie/loading.json',
+                                        repeat: true),
+                                  ],
+                                ))
                                 : const Text(
                                     'Masuk',
                                     style: TextStyle(
