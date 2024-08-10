@@ -44,16 +44,16 @@ class _DesktopState extends State<Desktop> {
     super.initState();
   }
 
-  void fResetPassword(String email) {
+  void resetPassword(String email) {
     references = email;
     authBloc.add(ForgetPasswordTokenEvent(email: email));
   }
 
-  void fChangePassword() {
+  void changePassword() {
     context.pushNamed(routeNameChangePasswordPage);
   }
 
-  void fEmailConfirmationTokenEvent() =>
+  void emailConfirmationTokenEvent() =>
       authBloc.add(EmailConfirmationTokenEvent());
 
   @override
@@ -196,7 +196,7 @@ class _DesktopState extends State<Desktop> {
                                         height: 18,
                                         child: TextButton(
                                             onPressed:
-                                                fEmailConfirmationTokenEvent,
+                                                emailConfirmationTokenEvent,
                                             child: const Text(
                                               'Verifikasi Sekarang',
                                               style: TextStyle(
@@ -335,7 +335,7 @@ class _DesktopState extends State<Desktop> {
                             icon: SvgPicture.asset(
                                 'lib/assets/svg/setting_white.svg'),
                             label: const Text('Reset Password'),
-                            onPressed: () => fResetPassword(state.user.email),
+                            onPressed: () => resetPassword(state.user.email),
                           ),
 
                           const SizedBox(
@@ -347,7 +347,7 @@ class _DesktopState extends State<Desktop> {
                             icon: SvgPicture.asset(
                                 'lib/assets/svg/edit_white.svg'),
                             label: const Text('Ganti Password'),
-                            onPressed: fChangePassword,
+                            onPressed: changePassword,
                           ),
                         ],
                       ),

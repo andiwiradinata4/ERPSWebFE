@@ -2,6 +2,7 @@ import 'package:erps/app/auth/cubit/auth_cubit.dart';
 import 'package:erps/app/components/wrapper.dart';
 import 'package:erps/features/auth/presentation/pages/v1/change_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/create_password_page.dart';
+import 'package:erps/features/auth/presentation/pages/v1/detail_account_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/forget_password_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/list_account_page.dart';
 import 'package:erps/features/auth/presentation/pages/v1/my_account_page.dart';
@@ -29,6 +30,7 @@ const String routePathCreatePasswordPage = '/create-password';
 const String routePathChangePasswordPage = '/change-password';
 const String routePathMyAccountPage = '/my-account';
 const String routePathListAccountPage = '/list-account';
+const String routePathDetailAccountPage = '/detail-account';
 const String routePathMasterAccessPage = '/access';
 const String routePathMasterProgramPage = '/program';
 const String routePathMasterModulePage = '/module';
@@ -42,6 +44,7 @@ const String routeNameCreatePasswordPage = 'create-password';
 const String routeNameChangePasswordPage = 'change-password';
 const String routeNameMyAccountPage = 'my-account';
 const String routeNameListAccountPage = 'list-account';
+const String routeNameDetailAccountPage = 'detail-account';
 const String routeNameMasterAccessPage = 'access';
 const String routeNameMasterProgramPage = 'program';
 const String routeNameMasterModulePage = 'module';
@@ -69,8 +72,7 @@ final appRouter = GoRouter(
       return null;
     });
 
-void populateRoutes(
-    LocalKey scaffoldKey, ScrollController verticalController) {
+void populateRoutes(LocalKey scaffoldKey, ScrollController verticalController) {
   /// Home Page
   routerList.add(GoRoute(
       path: routePathHomePage,
@@ -186,13 +188,7 @@ void populateRoutes(
   routerList.add(GoRoute(
       path: routePathChangePasswordPage,
       name: routeNameChangePasswordPage,
-      builder: (context, state) {
-        Object? extra = state.extra;
-        if (extra != null) {
-          if (extra is Map<String, String>) {}
-        }
-        return const ChangePasswordPage();
-      }));
+      builder: (context, state) => const ChangePasswordPage()));
 
   /// List Account Page
   routerList.add(GoRoute(
@@ -203,6 +199,30 @@ void populateRoutes(
           child: Wrapper(
             verticalController: verticalController,
             child: WrapperWidget(child: const ListAccountPage()),
+          ),
+          key: scaffoldKey,
+        );
+      }));
+
+  /// Detail Account Page
+  routerList.add(GoRoute(
+      path: routePathDetailAccountPage,
+      name: routeNameDetailAccountPage,
+      pageBuilder: (context, state) {
+        Object? extra = state.extra;
+        String id = '';
+        if (extra != null) {
+          if (extra is Map<String, String>) {
+            id = extra['id'] ?? '';
+          }
+        }
+        return FadeTransitionPage(
+          child: Wrapper(
+            verticalController: verticalController,
+            child: WrapperWidget(
+                child: DetailAccountPage(
+              id: id,
+            )),
           ),
           key: scaffoldKey,
         );

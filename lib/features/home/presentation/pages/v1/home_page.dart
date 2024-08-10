@@ -64,9 +64,7 @@ class FeatureCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         splashColor: Theme.of(context).primaryColor.withOpacity(0.2),
-        onTap: () {
-          context.goNamed(data.route);
-        },
+        onTap: () => context.goNamed(data.route),
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(8),

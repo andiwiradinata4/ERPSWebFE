@@ -9,9 +9,11 @@ import 'package:erps/core/config/size_config.dart';
 import 'package:erps/core/models/pagination.dart';
 import 'package:erps/features/auth/data/models/user.dart';
 import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
+import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 class ListAccountPage extends StatelessWidget {
   const ListAccountPage({super.key});
@@ -50,13 +52,19 @@ class _DesktopState extends State<Desktop> {
 
   @override
   void initState() {
-    queries = {'Page': page.toString(), 'PageSize': perPage.toString()};
+    perPage = selectedPerPageValue.pageValue;
+    setQueries();
 
     authBloc = context.read<AuthBloc>();
     authBloc.add(ListDataEvent(queries: queries));
     horizontalController = ScrollController();
     verticalController = ScrollController();
     super.initState();
+  }
+
+  void setQueries() {
+    queries['Page'] = page.toString();
+    queries['PageSize'] = perPage.toString();
   }
 
   List<DataColumn> setDataColumns() => const [
@@ -155,10 +163,7 @@ class _DesktopState extends State<Desktop> {
     }
   }
 
-  void setQueries() {
-    queries['Page'] = page.toString();
-    queries['PageSize'] = perPage.toString();
-  }
+  void detailData(String id) => context.goNamed(routeNameDetailAccountPage, extra: {'id': id});
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +227,7 @@ class _DesktopState extends State<Desktop> {
                                 icon: SvgPicture.asset(
                                     'lib/assets/svg/new_white.svg'),
                                 label: const Text('Baru'),
-                                onPressed: () {},
+                                onPressed: () => detailData(''),
                               ),
                             ),
                             Container(
@@ -295,7 +300,7 @@ class _DesktopState extends State<Desktop> {
                 children: [
                   Text('Page $page'),
                   IconButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 9),
+                      padding: const EdgeInsets.symmetric(horizontal: 9),
                       onPressed: (page == 1)
                           ? null
                           : () {
@@ -336,8 +341,7 @@ class _DesktopState extends State<Desktop> {
                       return DropdownMenuItem<PerPageValue>(
                         value: value,
                         child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 9.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 9.0),
                           child: Text(value.label),
                         ),
                       );
@@ -347,8 +351,7 @@ class _DesktopState extends State<Desktop> {
                       perPage = selectedPerPageValue.pageValue;
                       if (selectedPerPageValue.label == 'All') {
                         page = 1;
-                        queries['Page'] = 1.toString();
-                        queries['PageSize'] = 2147483647.toString();
+                        queries['Page'] = '0';
                       } else {
                         refreshRange();
                         setQueries();
