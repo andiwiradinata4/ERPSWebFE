@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:erps/app/components/us_data_cell.dart';
+import 'package:erps/app/components/us_date_picker.dart';
 import 'package:erps/app/components/us_dialog_builder.dart';
 import 'package:erps/app/components/us_snackbar_builder.dart';
+import 'package:erps/app/components/us_text_form_field.dart';
 import 'package:erps/app/utils/config.dart';
 import 'package:erps/core/config/responsive.dart';
 import 'package:erps/core/config/size_config.dart';
@@ -49,6 +51,11 @@ class _DesktopState extends State<Desktop> {
   int endAmount = 10;
   int count = 0;
   int totalPage = 0;
+
+  /// Fields
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController birthDateController = TextEditingController();
 
   @override
   void initState() {
@@ -163,7 +170,88 @@ class _DesktopState extends State<Desktop> {
     }
   }
 
-  void detailData(String id) => context.goNamed(routeNameDetailAccountPage, extra: {'id': id});
+  void detailData(String id) =>
+      context.goNamed(routeNameDetailAccountPage, extra: {'id': id});
+
+  Future<void> _dialogBuilder(BuildContext context, String id) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text((id == '') ? 'Register' : 'Edit Account'),
+          content: SizedBox(
+            width: SizeConfig.screenWidth * 0.3,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  /// First Name
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: UsTextFormField(
+                      fieldName: 'Nama Depan',
+                      usController: firstNameController,
+                      textInputType: TextInputType.text,
+                      validateValue: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Masukan nama depan terlebih dahulu';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+
+                  /// Last Name
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: UsTextFormField(
+                      fieldName: 'Nama Belakang',
+                      usController: lastNameController,
+                      textInputType: TextInputType.text,
+                      validateValue: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Masukan nama belakang terlebih dahulu';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+
+                  /// Birth Date
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: UsDatePicker(
+                      fieldName: 'Tanggal Lahir',
+                      usController: birthDateController,
+                      readOnly: true,
+                      validateValue: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Masukan tanggal lahir terlebih dahulu';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('Simpan'),
+            ),
+            OutlinedButton(
+              child: const Text('Tutup'),
+              onPressed: () => context.pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +315,7 @@ class _DesktopState extends State<Desktop> {
                                 icon: SvgPicture.asset(
                                     'lib/assets/svg/new_white.svg'),
                                 label: const Text('Baru'),
-                                onPressed: () => detailData(''),
+                                onPressed: () => _dialogBuilder(context, ''),
                               ),
                             ),
                             Container(
