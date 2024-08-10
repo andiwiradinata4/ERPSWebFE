@@ -1,30 +1,24 @@
-import 'dart:developer';
-
+import 'package:erps/app/utils/config.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class UsDatePicker extends StatefulWidget {
+  final DateTime value;
   final TextEditingController usController;
   final String fieldName;
   final Function(String?) validateValue;
   final bool readOnly;
-  final bool useSuffixIcon;
-  final IconData? activeSuffixIcon;
-  final IconData? deActiveSuffixIcon;
-  final bool isPasswordHandle;
   final String hintText;
   final bool autoFocus;
   final Function(String?)? onFieldSubmitted;
 
   const UsDatePicker(
       {super.key,
+      required this.value,
       required this.usController,
       required this.fieldName,
       required this.validateValue,
       this.readOnly = false,
-      this.useSuffixIcon = false,
-      this.activeSuffixIcon,
-      this.deActiveSuffixIcon,
-      this.isPasswordHandle = false,
       this.hintText = '',
       this.autoFocus = false,
       this.onFieldSubmitted});
@@ -34,28 +28,28 @@ class UsDatePicker extends StatefulWidget {
 }
 
 class _UsDatePickerState extends State<UsDatePicker> {
-  bool isActive = false;
-  bool obscureText = false;
-
-  @override
-  void initState() {
-    super.initState();
-    (widget.isPasswordHandle) ? obscureText = true : obscureText = false;
-  }
-
   Future<void> _selectDate(BuildContext context, DateTime selectedDate) async {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(DateTime.now().year - 200, 1),
-        lastDate: DateTime.now());
+        lastDate: DateTime.now(),
+        barrierColor: Theme.of(context).primaryColor.withOpacity(0.1));
     if (picked != null && picked != selectedDate) {
       if (mounted) {
         setState(() {
           selectedDate = picked;
+          widget.usController.text =
+              DateFormat(fDateSmall).format(selectedDate);
         });
       }
     }
+  }
+
+  @override
+  void initState() {
+    widget.usController.text = DateFormat(fDateSmall).format(widget.value);
+    super.initState();
   }
 
   @override
@@ -65,7 +59,6 @@ class _UsDatePickerState extends State<UsDatePicker> {
       keyboardType: TextInputType.datetime,
       readOnly: widget.readOnly,
       cursorColor: Theme.of(context).primaryColor,
-      obscureText: obscureText,
       autofocus: widget.autoFocus,
       onFieldSubmitted: widget.onFieldSubmitted,
       decoration: InputDecoration(
@@ -78,9 +71,7 @@ class _UsDatePickerState extends State<UsDatePicker> {
           contentPadding:
               const EdgeInsets.only(left: 30, right: 10, top: 13, bottom: 13),
           suffixIcon: GestureDetector(
-            onTap: () {
-              log('Test Date');
-            },
+            onTap: () => _selectDate(context, widget.value),
             child: Padding(
               padding: const EdgeInsets.only(right: 18),
               child: Icon(
@@ -90,7 +81,7 @@ class _UsDatePickerState extends State<UsDatePicker> {
             ),
           )),
       validator: (String? value) => widget.validateValue(value),
-      onTap: () => _selectDate(context, DateTime(2000)),
+      onTap: () => _selectDate(context, widget.value),
     );
   }
 }

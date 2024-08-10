@@ -56,6 +56,12 @@ class _DesktopState extends State<Desktop> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController birthDateController = TextEditingController();
+  DateTime birthDate = DateTime(DateTime.now().year);
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
 
   @override
   void initState() {
@@ -222,6 +228,7 @@ class _DesktopState extends State<Desktop> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: UsDatePicker(
+                      value: DateTime(DateTime.now().year),
                       fieldName: 'Tanggal Lahir',
                       usController: birthDateController,
                       readOnly: true,
@@ -234,13 +241,67 @@ class _DesktopState extends State<Desktop> {
                       },
                     ),
                   ),
+
+                  /// Username
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: UsTextFormField(
+                      fieldName: 'Username',
+                      usController: usernameController,
+                      textInputType: TextInputType.text,
+                      validateValue: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Masukan username terlebih dahulu';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+
+                  /// Password
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: UsTextFormField(
+                      fieldName: 'Password',
+                      usController: passwordController,
+                      textInputType: TextInputType.text,
+                      validateValue: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Masukan password terlebih dahulu';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+
+                  /// Confirm Password
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: UsTextFormField(
+                      fieldName: 'Confirm Password',
+                      usController: confirmPasswordController,
+                      textInputType: TextInputType.text,
+                      validateValue: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Masukan konfirmasi password terlebih dahulu';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ),
+
                 ],
               ),
             ),
           ),
           actions: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                log('${firstNameController.text.trim()} ${lastNameController.text.trim()} ${birthDateController.text.trim()} ');
+              },
               child: const Text('Simpan'),
             ),
             OutlinedButton(
