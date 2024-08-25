@@ -1,16 +1,17 @@
 import 'dart:developer';
 
-import 'package:erps/app/auth/cubit/auth_cubit.dart';
-import 'package:erps/app/components/us_dialog_builder.dart';
-import 'package:erps/app/utils/config.dart';
-import 'package:erps/core/config/responsive.dart';
-import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
-import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../../app/auth/cubit/auth_cubit.dart';
+import '../../../../../app/components/us_dialog_builder.dart';
+import '../../../../../core/config/constants.dart';
+import '../../../../../core/config/responsive.dart';
+import '../../../../../core/config/size_config.dart';
+import '../../../../../routes/v1.dart';
+import '../../bloc/v1/auth_bloc.dart';
 
 class MyAccountPage extends StatelessWidget {
   const MyAccountPage({super.key});
@@ -125,11 +126,11 @@ class _DesktopState extends State<Desktop> {
                             width: 18,
                           ),
                           SizedBox(
-                            height: 35,
+                            height: 38,
                             child: ElevatedButton.icon(
                               icon: SvgPicture.asset(
                                   'lib/assets/svg/edit_white.svg'),
-                              label: const Text('Edit'),
+                              label: const Text('Edit', style: TextStyle(fontSize: 15)),
                               onPressed: () {},
                             ),
                           )

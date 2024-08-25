@@ -1,10 +1,15 @@
-import 'package:erps/app/utils/config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../core/config/constants.dart';
+import '../../core/utils/date_util.dart';
+
 DataCell usDataCell(dynamic value, ColumnType columnType) {
   if (columnType == ColumnType.gSmallDate) {
-    return DataCell(SelectableText(DateFormat(fDateSmall).format(value)));
+    return DataCell(
+        SelectableText(DateFormat(fDateSmall).format(DateUtil().parse(value))));
+
+    // return DataCell(SelectableText(DateFormat(fDateSmall).format(value)));
   } else if (columnType == ColumnType.gFullDate) {
     return DataCell(SelectableText(DateFormat(fDateFull).format(value)));
   } else if (columnType == ColumnType.gIntNum) {

@@ -1,21 +1,21 @@
 import 'dart:developer';
 
-import 'package:erps/app/components/us_data_cell.dart';
-import 'package:erps/app/components/us_date_picker.dart';
-import 'package:erps/app/components/us_dialog_builder.dart';
-import 'package:erps/app/components/us_snackbar_builder.dart';
-import 'package:erps/app/components/us_text_form_field.dart';
-import 'package:erps/app/utils/config.dart';
-import 'package:erps/core/config/responsive.dart';
-import 'package:erps/core/config/size_config.dart';
-import 'package:erps/core/models/pagination.dart';
-import 'package:erps/features/auth/data/models/user.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
-import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../../app/components/us_data_cell.dart';
+import '../../../../../app/components/us_dialog_builder.dart';
+import '../../../../../app/components/us_snack_bar_builder.dart';
+import '../../../../../app/components/us_text_form_field.dart';
+import '../../../../../core/config/constants.dart';
+import '../../../../../core/config/responsive.dart';
+import '../../../../../core/config/size_config.dart';
+import '../../../../../core/models/data_column.dart';
+import '../../../../../core/models/pagination.dart';
+import '../../../../../routes/v1.dart';
+import '../../../data/models/user.dart';
+import '../../bloc/v1/auth_bloc.dart';
 
 class ListAccountPage extends StatelessWidget {
   const ListAccountPage({super.key});
@@ -41,7 +41,8 @@ class Desktop extends StatefulWidget {
 class _DesktopState extends State<Desktop> {
   late AuthBloc authBloc;
   late ScrollController horizontalController, verticalController;
-  late List<DataColumn> allColumns = [];
+
+  // late List<DataColumn> allColumns = [];
   Pagination<User> data = Pagination();
   PerPageValue selectedPerPageValue = initPerPageValue();
   Map<String, String> queries = {};
@@ -63,6 +64,44 @@ class _DesktopState extends State<Desktop> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
 
+  List<UsDataColumn> allColumns() => [
+        UsDataColumn(label: '#', name: '#', columnType: ColumnType.gString),
+        UsDataColumn(
+            label: 'Nama Depan',
+            name: 'FirstName',
+            columnType: ColumnType.gString),
+        UsDataColumn(
+            label: 'Nama Belakang',
+            name: 'LastName',
+            columnType: ColumnType.gString),
+        UsDataColumn(
+            label: 'Tanggal Lahir',
+            name: 'BirthDate',
+            columnType: ColumnType.gSmallDate),
+        UsDataColumn(
+            label: 'Username',
+            name: 'UserName',
+            columnType: ColumnType.gString),
+        UsDataColumn(
+            label: 'Normalized Username',
+            name: 'NormalizedUserName',
+            columnType: ColumnType.gString),
+        UsDataColumn(
+            label: 'Email', name: 'Email', columnType: ColumnType.gString),
+        UsDataColumn(
+            label: 'Normalized Email',
+            name: 'NormalizedEmail',
+            columnType: ColumnType.gString),
+        UsDataColumn(
+            label: 'Verifikasi Email?',
+            name: 'EmailConfirmed',
+            columnType: ColumnType.gBoolean),
+        UsDataColumn(
+            label: 'Phone Number',
+            name: 'PhoneNumber',
+            columnType: ColumnType.gString),
+      ];
+
   @override
   void initState() {
     perPage = selectedPerPageValue.pageValue;
@@ -80,77 +119,118 @@ class _DesktopState extends State<Desktop> {
     queries['PageSize'] = perPage.toString();
   }
 
-  List<DataColumn> setDataColumns() => const [
-        DataColumn(
-          label: Expanded(child: SelectableText('#')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('First Name')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Last Name')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Birth Date')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Username')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Normalized Username')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Email')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Normalized Email')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Email Confirmed')),
-        ),
-        DataColumn(
-          label: Expanded(child: SelectableText('Phone Number')),
-        ),
-      ];
+  // List<DataColumn> dataColumns(Pagination<User> data, {TextStyle? textStyle}) {
+  //   List<DataColumn> allColumns = [];
+  //   allColumns.add(DataColumn(
+  //     label: Expanded(
+  //         child: SelectableText(
+  //       '#',
+  //       style: textStyle,
+  //     )),
+  //   ));
+  //
+  //   (data.jsonResults as List<Map>).first.keys.map((e) {
+  //     var values = e.toString().split(RegExp(r"(?=[A-Z])"));
+  //     allColumns.add(DataColumn(
+  //       label: Expanded(
+  //           child: SelectableText(
+  //         values.join(" "),
+  //         style: textStyle,
+  //       )),
+  //     ));
+  //   });
+  //
+  //   return allColumns;
+  // }
+  //
+  // List<DataColumn> setDataColumns({TextStyle? textStyle}) => [
+  //       DataColumn(
+  //         label: Expanded(
+  //             child: SelectableText(
+  //           '#',
+  //           style: textStyle,
+  //         )),
+  //       ),
+  //       DataColumn(
+  //         label:
+  //             Expanded(child: SelectableText('First Name', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label: Expanded(child: SelectableText('Last Name', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label:
+  //             Expanded(child: SelectableText('Birth Date', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label: Expanded(child: SelectableText('Username', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label: Expanded(
+  //             child: SelectableText('Normalized Username', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label: Expanded(child: SelectableText('Email', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label: Expanded(
+  //             child: SelectableText('Normalized Email', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label: Expanded(
+  //             child: SelectableText('Email Confirmed', style: textStyle)),
+  //       ),
+  //       DataColumn(
+  //         label:
+  //             Expanded(child: SelectableText('Phone Number', style: textStyle)),
+  //       ),
+  //     ];
+  // DataRow setDataRow(User e) {
+  //   return DataRow(selected: e.isSelected, cells: [
+  //     DataCell(Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       children: setActionRowButton(e),
+  //     )),
+  //     usDataCell(e.firstName, ColumnType.gString),
+  //     usDataCell(e.lastName, ColumnType.gString),
+  //     usDataCell(e.birthDate, ColumnType.gSmallDate),
+  //     usDataCell(e.userName, ColumnType.gString),
+  //     usDataCell(e.normalizedUsername, ColumnType.gString),
+  //     usDataCell(e.email, ColumnType.gString),
+  //     usDataCell(e.normalizedEmail, ColumnType.gString),
+  //     usDataCell(e.emailConfirmed, ColumnType.gBoolean),
+  //     usDataCell(e.phoneNumber, ColumnType.gString),
+  //   ]);
+  // }
 
   List<Widget> setActionRowButton(User data) => [
         IconButton(
             iconSize: 18,
-            onPressed: () {
-              log('${data.firstName} ${data.lastName} - ${data.userName}');
-            },
-            tooltip: 'Edit',
+            onPressed: () => detailData(data.id),
+            tooltip: 'Lihat',
             icon: Icon(
-              Icons.edit_rounded,
+              Icons.app_registration_outlined,
               color: Theme.of(context).primaryColor,
-            )),
-        IconButton(
-            iconSize: 18,
-            onPressed: () {},
-            tooltip: 'Hapus',
-            icon: const Icon(
-              Icons.delete,
-              color: bgError,
             )),
       ];
 
-  DataRow setDataRow(User e) {
-    return DataRow(selected: e.isSelected, cells: [
-      DataCell(Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: setActionRowButton(e),
-      )),
-      usDataCell(e.firstName, ColumnType.gString),
-      usDataCell(e.lastName, ColumnType.gString),
-      usDataCell(e.birthDate, ColumnType.gSmallDate),
-      usDataCell(e.userName, ColumnType.gString),
-      usDataCell(e.normalizedUsername, ColumnType.gString),
-      usDataCell(e.email, ColumnType.gString),
-      usDataCell(e.normalizedEmail, ColumnType.gString),
-      usDataCell(e.emailConfirmed, ColumnType.gBoolean),
-      usDataCell(e.phoneNumber, ColumnType.gString),
-    ]);
+  List<DataRow> allRows(Pagination<User> data) {
+    if (data.jsonResults == null) return [];
+    return data.jsonResults!.map((e) {
+      List<DataCell> allCells = [];
+      allCells.addAll(allColumns()
+          .map((col) => (col.name == "#")
+              ? DataCell(Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: setActionRowButton(
+                      data.results.elementAt(data.jsonResults!.indexOf(e))),
+                ))
+              : usDataCell(e[col.name], col.columnType))
+          .toList());
+      return DataRow(cells: allCells);
+    }).toList();
   }
 
   void refresh() {
@@ -178,141 +258,6 @@ class _DesktopState extends State<Desktop> {
 
   void detailData(String id) =>
       context.goNamed(routeNameDetailAccountPage, extra: {'id': id});
-
-  Future<void> _dialogBuilder(BuildContext context, String id) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text((id == '') ? 'Register' : 'Edit Account'),
-          content: SizedBox(
-            width: SizeConfig.screenWidth * 0.3,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  /// First Name
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: UsTextFormField(
-                      fieldName: 'Nama Depan',
-                      usController: firstNameController,
-                      textInputType: TextInputType.text,
-                      validateValue: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukan nama depan terlebih dahulu';
-                        }
-
-                        return null;
-                      },
-                    ),
-                  ),
-
-                  /// Last Name
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: UsTextFormField(
-                      fieldName: 'Nama Belakang',
-                      usController: lastNameController,
-                      textInputType: TextInputType.text,
-                      validateValue: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukan nama belakang terlebih dahulu';
-                        }
-
-                        return null;
-                      },
-                    ),
-                  ),
-
-                  /// Birth Date
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: UsDatePicker(
-                      value: DateTime(DateTime.now().year),
-                      fieldName: 'Tanggal Lahir',
-                      usController: birthDateController,
-                      readOnly: true,
-                      validateValue: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukan tanggal lahir terlebih dahulu';
-                        }
-
-                        return null;
-                      },
-                    ),
-                  ),
-
-                  /// Username
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: UsTextFormField(
-                      fieldName: 'Username',
-                      usController: usernameController,
-                      textInputType: TextInputType.text,
-                      validateValue: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukan username terlebih dahulu';
-                        }
-
-                        return null;
-                      },
-                    ),
-                  ),
-
-                  /// Password
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: UsTextFormField(
-                      fieldName: 'Password',
-                      usController: passwordController,
-                      textInputType: TextInputType.text,
-                      validateValue: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukan password terlebih dahulu';
-                        }
-
-                        return null;
-                      },
-                    ),
-                  ),
-
-                  /// Confirm Password
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: UsTextFormField(
-                      fieldName: 'Confirm Password',
-                      usController: confirmPasswordController,
-                      textInputType: TextInputType.text,
-                      validateValue: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukan konfirmasi password terlebih dahulu';
-                        }
-
-                        return null;
-                      },
-                    ),
-                  ),
-
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                log('${firstNameController.text.trim()} ${lastNameController.text.trim()} ${birthDateController.text.trim()} ');
-              },
-              child: const Text('Simpan'),
-            ),
-            OutlinedButton(
-              child: const Text('Tutup'),
-              onPressed: () => context.pop(),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -370,22 +315,34 @@ class _DesktopState extends State<Desktop> {
                         Row(
                           children: [
                             Container(
-                              height: 35,
+                              height: 38,
+                              alignment: Alignment.center,
                               padding: const EdgeInsets.only(left: 18),
                               child: ElevatedButton.icon(
-                                icon: SvgPicture.asset(
-                                    'lib/assets/svg/new_white.svg'),
-                                label: const Text('Baru'),
-                                onPressed: () => _dialogBuilder(context, ''),
+                                icon: const Icon(
+                                  Icons.add,
+                                  size: 20,
+                                ),
+                                label: const Text(
+                                  'Baru',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                onPressed: () => detailData(''),
                               ),
                             ),
                             Container(
-                              height: 35,
+                              height: 38,
+                              alignment: Alignment.center,
                               padding: const EdgeInsets.only(left: 9),
                               child: ElevatedButton.icon(
-                                icon: SvgPicture.asset(
-                                    'lib/assets/svg/refresh_white.svg'),
-                                label: const Text('Refresh'),
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  size: 20,
+                                ),
+                                label: const Text(
+                                  'Refresh',
+                                  style: TextStyle(fontSize: 15),
+                                ),
                                 onPressed: refresh,
                               ),
                             ),
@@ -394,21 +351,41 @@ class _DesktopState extends State<Desktop> {
                       ],
                     ),
                   ),
+
                   Container(
-                    width: (Responsive.isDesktop(context))
-                        ? SizeConfig.screenWidth * 0.4
-                        : SizeConfig.screenWidth * 0.2,
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Search',
-                        border: OutlineInputBorder(),
-                      ),
-                      onSubmitted: (String? value) {
-                        log(value ?? 'Search');
-                      },
-                    ),
-                  )
+                      width: (Responsive.isDesktop(context))
+                          ? SizeConfig.screenWidth * 0.4
+                          : SizeConfig.screenWidth * 0.2,
+                      padding: const EdgeInsets.symmetric(horizontal: 9),
+                      decoration: BoxDecoration(
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(18)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Cari'),
+                          IconButton(
+                              onPressed: () {}, icon: const Icon(Icons.search))
+                        ],
+                      ))
+
+                  // Container(
+                  //   width: (Responsive.isDesktop(context))
+                  //       ? SizeConfig.screenWidth * 0.4
+                  //       : SizeConfig.screenWidth * 0.2,
+                  //   padding: const EdgeInsets.symmetric(horizontal: 18),
+                  //   child: TextField(
+                  //     decoration: const InputDecoration(
+                  //       labelText: 'Search',
+                  //       border: OutlineInputBorder(),
+                  //     ),
+                  //     onSubmitted: (String? value) {
+                  //       log(value ?? 'Cari');
+                  //     },
+                  //
+                  //   ),
+                  // )
                 ],
               ),
             ),
@@ -432,8 +409,17 @@ class _DesktopState extends State<Desktop> {
                       controller: verticalController,
                       scrollDirection: Axis.vertical,
                       child: DataTable(
-                        columns: setDataColumns(),
-                        rows: data.results.map((e) => setDataRow(e)).toList(),
+                        columns: allColumns()
+                            .map((e) => DataColumn(
+                                  label: Expanded(
+                                      child: SelectableText(e.label,
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              fontWeight: FontWeight.bold))),
+                                ))
+                            .toList(),
+                        rows: allRows(data),
                       ),
                     ),
                   ),

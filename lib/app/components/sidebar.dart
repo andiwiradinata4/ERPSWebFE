@@ -1,12 +1,13 @@
 import 'package:erps/app/auth/cubit/auth_cubit.dart';
-import 'package:erps/app/utils/config.dart';
-import 'package:erps/core/config/injector_dependency_name.dart';
-import 'package:erps/features/auth/domain/services/v1/abs_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../core/config/constants.dart';
+import '../../core/config/injector_dependency_name.dart';
+import '../../features/auth/domain/services/v1/abs_auth_service.dart';
 
 class LinkSideBar {
   late String icon, label, link;

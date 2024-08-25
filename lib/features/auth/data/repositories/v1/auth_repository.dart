@@ -1,17 +1,18 @@
 import 'dart:convert';
-import 'package:erps/core/error/error_response_exception.dart';
-import 'package:erps/core/models/pagination.dart';
-import 'package:erps/core/models/token.dart';
-import 'package:erps/core/network/http/abstract/abs_http_client.dart';
-import 'package:erps/core/network/http/http_status.dart';
-import 'package:erps/features/auth/data/models/user.dart';
-import 'package:erps/features/auth/domain/entities/v1/change_email_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/change_phone_number_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/register_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
-import 'package:erps/features/auth/domain/repositories/v1/abs_auth_repository.dart';
+
+import '../../../../../core/error/error_response_exception.dart';
+import '../../../../../core/models/pagination.dart';
+import '../../../../../core/models/token.dart';
+import '../../../../../core/network/http/abstract/abs_http_client.dart';
+import '../../../../../core/network/http/http_status.dart';
+import '../../../domain/entities/v1/change_email_entity.dart';
+import '../../../domain/entities/v1/change_phone_number_entity.dart';
+import '../../../domain/entities/v1/login_entity.dart';
+import '../../../domain/entities/v1/register_entity.dart';
+import '../../../domain/entities/v1/reset_password_entity.dart';
+import '../../../domain/entities/v1/verify_email_confirmation_entity.dart';
+import '../../../domain/repositories/v1/abs_auth_repository.dart';
+import '../../models/user.dart';
 
 class AuthRepository implements AbsAuthRepository {
   final AbsHttpClient client;
@@ -279,8 +280,6 @@ class AuthRepository implements AbsAuthRepository {
         data.results =
             (json['Data'] as List).map((e) => User.fromJson(e)).toList();
         data.jsonResults = json['Data'];
-
-        // data = (json['Data'] as List).map((e) => User.fromJson(e)).toList();
       } else {
         throw (ErrorResponseException.fromHttpResponse(response));
       }

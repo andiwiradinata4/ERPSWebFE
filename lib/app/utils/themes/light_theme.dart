@@ -1,6 +1,7 @@
-import 'package:erps/app/utils/config.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../core/config/constants.dart';
 
 ThemeData lightTheme(BuildContext context) => ThemeData(
       scaffoldBackgroundColor: bgColor,

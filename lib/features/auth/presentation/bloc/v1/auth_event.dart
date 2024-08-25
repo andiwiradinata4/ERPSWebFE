@@ -75,3 +75,30 @@ class ListDataEvent extends AuthEvent {
   @override
   List<Object?> get props => [queries];
 }
+
+class GetDetailEvent extends AuthEvent {
+  final String id;
+
+  GetDetailEvent({required this.id});
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class RegisterEvent extends AuthEvent {
+  final RegisterEntity data;
+
+  RegisterEvent({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+
+class DeleteEvent extends AuthEvent {
+  final String id;
+
+  DeleteEvent({required this.id});
+
+  @override
+  List<Object?> get props => [id];
+}

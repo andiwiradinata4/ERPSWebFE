@@ -1,10 +1,11 @@
-import 'package:erps/core/config/responsive.dart';
-import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/home/data/models/menu.dart';
-import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../../core/config/responsive.dart';
+import '../../../../../core/config/size_config.dart';
+import '../../../../../routes/v1.dart';
+import '../../../data/models/menu.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

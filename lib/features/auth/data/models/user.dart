@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:erps/core/utils/date_util.dart';
+
+import '../../../../core/models/data_column.dart';
+import '../../../../core/utils/date_util.dart';
 
 // ignore: must_be_immutable
 class User extends Equatable {
@@ -82,6 +84,7 @@ class User extends Equatable {
         'LockoutEnabled': lockoutEnabled,
         'AccessFailedCount': accessFailedCount
       };
+
 
   @override
   List<Object?> get props => [

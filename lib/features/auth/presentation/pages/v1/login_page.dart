@@ -1,14 +1,15 @@
-import 'package:erps/app/auth/cubit/auth_cubit.dart';
-import 'package:erps/app/components/us_snackbar_builder.dart';
-import 'package:erps/app/components/us_text_form_field.dart';
-import 'package:erps/core/config/responsive.dart';
-import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
-import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../../../../app/auth/cubit/auth_cubit.dart';
+import '../../../../../app/components/us_snack_bar_builder.dart';
+import '../../../../../app/components/us_text_form_field.dart';
+import '../../../../../core/config/responsive.dart';
+import '../../../../../core/config/size_config.dart';
+import '../../../../../routes/v1.dart';
+import '../../bloc/v1/auth_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   final String redirectTo;
@@ -94,7 +95,13 @@ class _DefaultState extends State<Default> {
           if (state is LoginErrorState) {
             Future.delayed(Duration.zero, () {
               UsSnackBarBuilder.showErrorSnackBar(context, state.message);
+              if (mounted) {
+                setState(() {
+                  isLoading = false;
+                });
+              }
             });
+
           } else if (state is LoginLoadingState) {
             if (mounted) {
               setState(() {

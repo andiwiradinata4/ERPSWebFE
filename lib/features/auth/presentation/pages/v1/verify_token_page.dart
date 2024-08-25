@@ -1,16 +1,17 @@
-import 'package:erps/app/auth/cubit/auth_cubit.dart';
-import 'package:erps/app/components/us_app_bar.dart';
-import 'package:erps/app/components/us_dialog_builder.dart';
-import 'package:erps/app/components/us_snackbar_builder.dart';
-import 'package:erps/app/components/us_text_form_field.dart';
-import 'package:erps/core/config/responsive.dart';
-import 'package:erps/core/config/size_config.dart';
-import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
-import 'package:erps/features/auth/presentation/bloc/v1/auth_bloc.dart';
-import 'package:erps/routes/v1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../../app/auth/cubit/auth_cubit.dart';
+import '../../../../../app/components/us_app_bar.dart';
+import '../../../../../app/components/us_dialog_builder.dart';
+import '../../../../../app/components/us_snack_bar_builder.dart';
+import '../../../../../app/components/us_text_form_field.dart';
+import '../../../../../core/config/responsive.dart';
+import '../../../../../core/config/size_config.dart';
+import '../../../../../routes/v1.dart';
+import '../../../domain/entities/v1/verify_email_confirmation_entity.dart';
+import '../../bloc/v1/auth_bloc.dart';
 
 /// PROCESS : RESET_PASSWORD | CHANGE_PASSWORD | CHANGE_PHONE_NUMBER / VERIFY_EMAIL_ADDRESS / VERIFY_PHONE_NUMBER
 

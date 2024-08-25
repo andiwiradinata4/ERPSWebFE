@@ -1,16 +1,16 @@
-import 'package:erps/core/domain/repositories/v1/abs_auth_local_repository.dart';
-import 'package:erps/core/models/pagination.dart';
-import 'package:erps/core/models/token.dart';
-import 'package:erps/core/network/http/abstract/abs_http_client.dart';
-import 'package:erps/features/auth/data/models/user.dart';
-import 'package:erps/features/auth/domain/entities/v1/change_email_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/change_phone_number_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/register_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
-import 'package:erps/features/auth/domain/repositories/v1/abs_auth_repository.dart';
-import 'package:erps/features/auth/domain/services/v1/abs_auth_service.dart';
+import '../../../../../core/domain/repositories/v1/abs_auth_local_repository.dart';
+import '../../../../../core/models/pagination.dart';
+import '../../../../../core/models/token.dart';
+import '../../../../../core/network/http/abstract/abs_http_client.dart';
+import '../../../domain/entities/v1/change_email_entity.dart';
+import '../../../domain/entities/v1/change_phone_number_entity.dart';
+import '../../../domain/entities/v1/login_entity.dart';
+import '../../../domain/entities/v1/register_entity.dart';
+import '../../../domain/entities/v1/reset_password_entity.dart';
+import '../../../domain/entities/v1/verify_email_confirmation_entity.dart';
+import '../../../domain/repositories/v1/abs_auth_repository.dart';
+import '../../../domain/services/v1/abs_auth_service.dart';
+import '../../models/user.dart';
 
 class AuthService implements AbsAuthService {
   final AbsAuthRepository repo;
@@ -61,14 +61,17 @@ class AuthService implements AbsAuthService {
   }
 
   @override
-  Future<bool> register(RegisterEntity data) async {
-    Token token = await repo.register(data);
-    if (token.accessToken != '') {
-      setToken(token);
-      // await localRepo.store(token);
-      return true;
-    }
-    return false;
+  Future<Token> register(RegisterEntity data) async {
+    // initAuthState();
+    // Token token = await repo.register(data);
+    // if (token.accessToken != '') {
+    //   setToken(token);
+    //   return true;
+    // }
+    // return false;
+
+    initAuthState();
+    return await repo.register(data);
   }
 
   @override
@@ -93,53 +96,63 @@ class AuthService implements AbsAuthService {
 
   @override
   Future<Token> emailConfirmationToken() async {
+    initAuthState();
     return await repo.emailConfirmationToken();
   }
 
   @override
   Future<bool> verifyEmailConfirmation(
       VerifyEmailConfirmationEntity data) async {
+    initAuthState();
     return await repo.verifyEmailConfirmation(data);
   }
 
   @override
   Future<Token> changeEmailToken(String newEmail) async {
+    initAuthState();
     return await repo.changeEmailToken(newEmail);
   }
 
   @override
   Future<bool> changeEmail(ChangeEmailEntity data) async {
+    initAuthState();
     return await repo.changeEmail(data);
   }
 
   @override
   Future<Token> changePhoneNumberToken(String newPhoneNumber) async {
+    initAuthState();
     return await repo.changePhoneNumberToken(newPhoneNumber);
   }
 
   @override
   Future<bool> changePassword(
       String currentPassword, String newPassword) async {
+    initAuthState();
     return await repo.changePassword(currentPassword, newPassword);
   }
 
   @override
   Future<bool> changePhoneNumber(ChangePhoneNumberEntity data) async {
+    initAuthState();
     return await repo.changePhoneNumber(data);
   }
 
   @override
   Future<Token> resetPasswordToken(String email) async {
+    initAuthState();
     return await repo.resetPasswordToken(email);
   }
 
   @override
   Future<bool> resetPassword(ResetPasswordEntity data) async {
+    initAuthState();
     return await repo.resetPassword(data);
   }
 
   @override
   Future<User> me() async {
+    initAuthState();
     return await repo.me();
   }
 
@@ -149,7 +162,21 @@ class AuthService implements AbsAuthService {
   }
 
   @override
+  Future<User> getDetail(String id) async {
+    initAuthState();
+    return await repo.getDetail(id);
+  }
+
+  @override
   Future<Pagination<User>> listData(Map<String, String>? queries) async {
+    initAuthState();
     return await repo.listData(queries);
   }
+
+  @override
+  Future<bool> delete(String id) async {
+    initAuthState();
+    return await repo.delete(id);
+  }
+
 }

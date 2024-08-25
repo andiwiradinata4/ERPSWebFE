@@ -1,15 +1,17 @@
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
-import 'package:erps/core/error/error_response_exception.dart';
-import 'package:erps/core/models/pagination.dart';
-import 'package:erps/core/models/token.dart';
-import 'package:erps/features/auth/data/models/user.dart';
-import 'package:erps/features/auth/domain/entities/v1/login_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/reset_password_entity.dart';
-import 'package:erps/features/auth/domain/entities/v1/verify_email_confirmation_entity.dart';
-import 'package:erps/features/auth/domain/services/v1/abs_auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../core/error/error_response_exception.dart';
+import '../../../../../core/models/pagination.dart';
+import '../../../../../core/models/token.dart';
+import '../../../data/models/user.dart';
+import '../../../domain/entities/v1/login_entity.dart';
+import '../../../domain/entities/v1/register_entity.dart';
+import '../../../domain/entities/v1/reset_password_entity.dart';
+import '../../../domain/entities/v1/verify_email_confirmation_entity.dart';
+import '../../../domain/services/v1/abs_auth_service.dart';
 
 part 'auth_event.dart';
 
@@ -27,6 +29,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<EmailConfirmationTokenEvent>(_onEmailConfirmationTokenEvent);
     on<VerifyEmailConfirmationEvent>(_onVerifyEmailConfirmationEvent);
     on<ListDataEvent>(_onListDataEvent);
+    on<GetDetailEvent>(_onGetDetailEvent);
+    on<RegisterEvent>(_onRegisterEvent);
+    on<DeleteEvent>(_onDeleteEvent);
   }
 
   void _onLoginAuthEvent(LoginAuthEvent event, Emitter<AuthState> emit) async {
@@ -180,6 +185,61 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               .replaceAll(']', '')));
     } catch (e) {
       emit(LoginErrorState(message: e.toString()));
+    }
+  }
+
+  void _onGetDetailEvent(GetDetailEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      User data = await _service.getDetail(event.id);
+      emit(GetDetailSuccessState(data));
+    } on ErrorResponseException catch (e) {
+      emit(GetDetailErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(LoginErrorState(message: e.toString()));
+    }
+  }
+
+  void _onRegisterEvent(RegisterEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      Token data = await _service.register(event.data);
+
+      /// For Register External User.
+      // _service.login(LoginEntity(
+      //     userName: event.data.userName, password: event.data.password));
+      emit(RegisterSuccessState(data));
+    } on ErrorResponseException catch (e) {
+      emit(RegisterErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(RegisterErrorState(message: e.toString()));
+    }
+  }
+
+  void _onDeleteEvent(DeleteEvent event, Emitter<AuthState> emit) async {
+    emit(LoginLoadingState());
+    try {
+      bool isSuccess = await _service.delete(event.id);
+      emit(DeleteSuccessState(isSuccess));
+    } on ErrorResponseException catch (e) {
+      emit(DeleteErrorState(
+          statusCode: e.statusCode,
+          message: e.errors.values.first
+              .toString()
+              .replaceAll('[', '')
+              .replaceAll(']', '')));
+    } catch (e) {
+      emit(DeleteErrorState(message: e.toString()));
     }
   }
 }

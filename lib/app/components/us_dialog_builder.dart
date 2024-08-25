@@ -1,9 +1,9 @@
 // ignore_for_file: must_be_immutable
-
-import 'package:erps/app/utils/config.dart';
-import 'package:erps/core/config/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../core/config/constants.dart';
+import '../../core/config/size_config.dart';
 
 mixin IDialogService {
   void dismiss();
@@ -20,8 +20,8 @@ class UsDialogBuilder {
 
   static Future<void> loadErrorDialog(BuildContext context,
       {required String message,
-        bool repeat = true,
-        bool showButton = true}) async {
+      bool repeat = true,
+      bool showButton = true}) async {
     _current = LoadDialog(
       title: '',
       asset: 'lib/assets/lottie/error.json',
@@ -35,7 +35,7 @@ class UsDialogBuilder {
       context: context,
       barrierDismissible: false,
       builder: (context) =>
-      _current ??
+          _current ??
           LoadDialog(
             title: '',
             asset: 'lib/assets/lottie/error.json',
@@ -49,8 +49,8 @@ class UsDialogBuilder {
 
   static Future<void> loadSuccessDialog(BuildContext context,
       {required String message,
-        bool repeat = true,
-        bool showButton = true}) async {
+      bool repeat = true,
+      bool showButton = true}) async {
     _current = LoadDialog(
       title: '',
       asset: 'lib/assets/lottie/success.json',
@@ -64,7 +64,7 @@ class UsDialogBuilder {
       context: context,
       barrierDismissible: false,
       builder: (context) =>
-      _current ??
+          _current ??
           LoadDialog(
             title: '',
             asset: 'lib/assets/lottie/success.json',
@@ -78,10 +78,10 @@ class UsDialogBuilder {
 
   static Future<void> loadAlertDialog(BuildContext context,
       {String title = "",
-        required String asset,
-        required String message,
-        bool repeat = true,
-        bool showButton = true}) async {
+      required String asset,
+      required String message,
+      bool repeat = true,
+      bool showButton = true}) async {
     _current = LoadDialog(
       title: title,
       asset: asset,
@@ -95,7 +95,7 @@ class UsDialogBuilder {
       context: context,
       barrierDismissible: false,
       builder: (context) =>
-      _current ??
+          _current ??
           LoadDialog(
             title: title,
             asset: asset,
@@ -108,8 +108,8 @@ class UsDialogBuilder {
   }
 
   static Future<void> loadLoadingDialog(
-      BuildContext context,
-      ) async {
+    BuildContext context,
+  ) async {
     _current = LoadDialog(
       title: '',
       asset: 'lib/assets/lottie/loading.json',
@@ -123,13 +123,40 @@ class UsDialogBuilder {
       context: context,
       barrierDismissible: false,
       builder: (context) =>
-      _current ??
+          _current ??
           LoadDialog(
             title: '',
             asset: 'lib/assets/lottie/loading.json',
             message: 'Loading ... ',
             repeat: true,
             showButton: false,
+            width: 100,
+          ),
+    );
+  }
+
+  static Future<void> loadConfirmDialog(
+      BuildContext context, String title, String message) async {
+    _current = LoadConfirmDialog(
+      title: title,
+      asset: '',
+      message: message,
+      repeat: false,
+      showButton: true,
+      width: 100,
+    );
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) =>
+      _current ??
+          LoadConfirmDialog(
+            title: title,
+            asset: '',
+            message: message,
+            repeat: false,
+            showButton: true,
             width: 100,
           ),
     );
@@ -150,12 +177,12 @@ class LoadDialog extends IDialog {
 
   LoadDialog(
       {super.key,
-        required this.title,
-        required this.asset,
-        required this.message,
-        required this.repeat,
-        required this.showButton,
-        required this.width});
+      required this.title,
+      required this.asset,
+      required this.message,
+      required this.repeat,
+      required this.showButton,
+      required this.width});
 
   BuildContext? _context;
 
@@ -178,13 +205,77 @@ class LoadDialog extends IDialog {
               const SizedBox(height: defaultPadding),
               (showButton)
                   ? SizedBox(
-                width: SizeConfig.screenWidth,
-                child: OutlinedButton(
-                  onPressed: () => dismiss(),
-                  child: const Text('OK'),
-                ),
-              )
+                      width: SizeConfig.screenWidth,
+                      child: OutlinedButton(
+                        onPressed: () => dismiss(),
+                        child: const Text('OK'),
+                      ),
+                    )
                   : const SizedBox()
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dismiss() {
+    Navigator.pop(_context!);
+  }
+}
+
+class LoadConfirmDialog extends IDialog {
+  final String title, asset, message;
+  final bool repeat, showButton;
+  final double width;
+
+  LoadConfirmDialog(
+      {super.key,
+      required this.title,
+      required this.asset,
+      required this.message,
+      required this.repeat,
+      required this.showButton,
+      required this.width});
+
+  BuildContext? _context;
+
+  @override
+  Widget build(BuildContext context) {
+    _context = context;
+    return AlertDialog(
+      scrollable: true,
+      title: Text(title),
+      actions: [
+        SizedBox(
+          width: 100,
+          child: ElevatedButton(
+            onPressed: () => Navigator.pop(_context!, true),
+            child: const Text('Ya'),
+          ),
+        ),
+        SizedBox(
+          width: 100,
+          child: OutlinedButton(
+            onPressed: () => Navigator.pop(_context!, false),
+            child: const Text('Tidak'),
+          ),
+        ),
+      ],
+      content: Container(
+        alignment: Alignment.centerLeft,
+        constraints: const BoxConstraints(minWidth: 300),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              (asset.isEmpty)
+                  ? const SizedBox()
+                  : Lottie.asset(asset, repeat: repeat, width: width),
+              const SizedBox(height: defaultPadding),
+              Text(message),
+              const SizedBox(height: defaultPadding),
             ],
           ),
         ),

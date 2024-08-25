@@ -1,5 +1,6 @@
-import 'package:erps/app/utils/config.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/config/constants.dart';
 
 class UsSnackBarBuilder {
   static showErrorSnackBar(BuildContext context, String content) => show(

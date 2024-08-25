@@ -113,3 +113,60 @@ class ListDataErrorState extends AuthState {
   @override
   List<Object?> get props => [statusCode, message];
 }
+
+class GetDetailSuccessState extends AuthState {
+  final User data;
+
+  GetDetailSuccessState(this.data);
+
+  @override
+  List<Object?> get props => [data];
+}
+
+class GetDetailErrorState extends AuthState {
+  final int statusCode;
+  final String message;
+
+  GetDetailErrorState({this.statusCode = 0, required this.message});
+
+  @override
+  List<Object?> get props => [statusCode, message];
+}
+
+class RegisterSuccessState extends AuthState {
+  final Token data;
+
+  RegisterSuccessState(this.data);
+
+  @override
+  List<Object?> get props => [data];
+}
+
+class RegisterErrorState extends AuthState {
+  final int statusCode;
+  final String message;
+
+  RegisterErrorState({this.statusCode = 0, required this.message});
+
+  @override
+  List<Object?> get props => [statusCode, message];
+}
+
+class DeleteSuccessState extends AuthState {
+  final bool isSuccess;
+
+  DeleteSuccessState(this.isSuccess);
+
+  @override
+  List<Object?> get props => [isSuccess];
+}
+
+class DeleteErrorState extends AuthState {
+  final int statusCode;
+  final String message;
+
+  DeleteErrorState({this.statusCode = 0, required this.message});
+
+  @override
+  List<Object?> get props => [statusCode, message];
+}

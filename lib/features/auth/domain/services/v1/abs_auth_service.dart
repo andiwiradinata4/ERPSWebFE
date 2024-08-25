@@ -13,7 +13,7 @@ abstract class AbsAuthService {
 
   deleteToken();
 
-  Future<bool> register(RegisterEntity data);
+  Future<Token> register(RegisterEntity data);
 
   Future<Token> login(LoginEntity data);
 
@@ -39,5 +39,10 @@ abstract class AbsAuthService {
 
   Future<User> me();
 
+  Future<User> getDetail(String id);
+
   Future<Pagination<User>> listData(Map<String, String>? queries);
+
+  Future<bool> delete(String id);
+
 }
