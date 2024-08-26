@@ -255,7 +255,7 @@ class _DesktopState extends State<Desktop> {
                                     ),
                               const SizedBox(
                                 width: 18,
-                              )
+                              ),
                             ],
                           ),
                         ],
