@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../app/components/us_data_cell.dart';
+import '../../../../../app/components/us_date_picker.dart';
 import '../../../../../app/components/us_dialog_builder.dart';
 import '../../../../../app/components/us_snack_bar_builder.dart';
 import '../../../../../app/components/us_text_form_field.dart';
@@ -42,7 +44,6 @@ class _DesktopState extends State<Desktop> {
   late AuthBloc authBloc;
   late ScrollController horizontalController, verticalController;
 
-  // late List<DataColumn> allColumns = [];
   Pagination<User> data = Pagination();
   PerPageValue selectedPerPageValue = initPerPageValue();
   Map<String, String> queries = {};
@@ -119,91 +120,6 @@ class _DesktopState extends State<Desktop> {
     queries['PageSize'] = perPage.toString();
   }
 
-  // List<DataColumn> dataColumns(Pagination<User> data, {TextStyle? textStyle}) {
-  //   List<DataColumn> allColumns = [];
-  //   allColumns.add(DataColumn(
-  //     label: Expanded(
-  //         child: SelectableText(
-  //       '#',
-  //       style: textStyle,
-  //     )),
-  //   ));
-  //
-  //   (data.jsonResults as List<Map>).first.keys.map((e) {
-  //     var values = e.toString().split(RegExp(r"(?=[A-Z])"));
-  //     allColumns.add(DataColumn(
-  //       label: Expanded(
-  //           child: SelectableText(
-  //         values.join(" "),
-  //         style: textStyle,
-  //       )),
-  //     ));
-  //   });
-  //
-  //   return allColumns;
-  // }
-  //
-  // List<DataColumn> setDataColumns({TextStyle? textStyle}) => [
-  //       DataColumn(
-  //         label: Expanded(
-  //             child: SelectableText(
-  //           '#',
-  //           style: textStyle,
-  //         )),
-  //       ),
-  //       DataColumn(
-  //         label:
-  //             Expanded(child: SelectableText('First Name', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label: Expanded(child: SelectableText('Last Name', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label:
-  //             Expanded(child: SelectableText('Birth Date', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label: Expanded(child: SelectableText('Username', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label: Expanded(
-  //             child: SelectableText('Normalized Username', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label: Expanded(child: SelectableText('Email', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label: Expanded(
-  //             child: SelectableText('Normalized Email', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label: Expanded(
-  //             child: SelectableText('Email Confirmed', style: textStyle)),
-  //       ),
-  //       DataColumn(
-  //         label:
-  //             Expanded(child: SelectableText('Phone Number', style: textStyle)),
-  //       ),
-  //     ];
-  // DataRow setDataRow(User e) {
-  //   return DataRow(selected: e.isSelected, cells: [
-  //     DataCell(Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: setActionRowButton(e),
-  //     )),
-  //     usDataCell(e.firstName, ColumnType.gString),
-  //     usDataCell(e.lastName, ColumnType.gString),
-  //     usDataCell(e.birthDate, ColumnType.gSmallDate),
-  //     usDataCell(e.userName, ColumnType.gString),
-  //     usDataCell(e.normalizedUsername, ColumnType.gString),
-  //     usDataCell(e.email, ColumnType.gString),
-  //     usDataCell(e.normalizedEmail, ColumnType.gString),
-  //     usDataCell(e.emailConfirmed, ColumnType.gBoolean),
-  //     usDataCell(e.phoneNumber, ColumnType.gString),
-  //   ]);
-  // }
-
   List<Widget> setActionRowButton(User data) => [
         IconButton(
             iconSize: 18,
@@ -259,6 +175,136 @@ class _DesktopState extends State<Desktop> {
   void detailData(String id) =>
       context.goNamed(routeNameDetailAccountPage, extra: {'id': id});
 
+  Future _showSearchDialogBuilder(BuildContext context, String title) {
+    Map<String, dynamic> selectedFilter = {};
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            scrollable: true,
+            content: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      /// First Name
+                      Expanded(
+                        child: UsTextFormField(
+                          fieldName: 'Nama Depan',
+                          usController: firstNameController,
+                          textInputType: TextInputType.text,
+                          validateValue: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan nama depan terlebih dahulu';
+                            }
+
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 18,
+                      ),
+
+                      /// Last Name
+                      Expanded(
+                        child: UsTextFormField(
+                          fieldName: 'Nama Belakang',
+                          usController: lastNameController,
+                          textInputType: TextInputType.text,
+                          validateValue: (String? value) {
+                            // if (value == null || value.isEmpty) {
+                            //   return 'Masukan nama belakang terlebih dahulu';
+                            // }
+
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 18,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      /// Birth Date
+                      Expanded(
+                        child: UsDatePicker(
+                          value: birthDate,
+                          fieldName: 'Tanggal Lahir',
+                          usController: birthDateController,
+                          readOnly: true,
+                          validateValue: (String? value) {
+                            birthDate = DateFormat(fDateSmall).tryParse(
+                                    birthDateController.text.trim()) ??
+                                DateTime.now();
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan tanggal lahir terlebih dahulu';
+                            } else if (DateTime.now().year - birthDate.year <=
+                                10) {
+                              return 'Usia harus lebih besar dari 10 tahun';
+                            }
+
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 18,
+                      ),
+
+                      /// Username
+                      Expanded(
+                        child: UsTextFormField(
+                          fieldName: 'Username',
+                          usController: usernameController,
+                          textInputType: TextInputType.text,
+                          validateValue: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan username terlebih dahulu';
+                            }
+
+                            return null;
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 18,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  selectedFilter['FirstName'] = firstNameController.text.trim();
+                  selectedFilter['LastName'] = lastNameController.text.trim();
+                  selectedFilter['UserName'] = usernameController.text.trim();
+                  context.pop(selectedFilter);
+                },
+                child: const Text('Lanjut'),
+              ),
+              TextButton(
+                onPressed: () => context.pop(selectedFilter),
+                child: const Text('Kembali'),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
@@ -297,65 +343,83 @@ class _DesktopState extends State<Desktop> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// Header
-            SizedBox(
-              height: SizeConfig.screenHeight * 0.15,
+            Container(
+              alignment: Alignment.bottomLeft,
+              height: 80,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(
-                          "List User",
-                          style: TextStyle(
-                              fontSize:
-                                  (Responsive.isDesktop(context)) ? 35 : 20,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              height: 38,
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.only(left: 18),
-                              child: ElevatedButton.icon(
-                                icon: const Icon(
-                                  Icons.add,
-                                  size: 20,
-                                ),
-                                label: const Text(
-                                  'Baru',
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                onPressed: () => detailData(''),
-                              ),
-                            ),
-                            Container(
-                              height: 38,
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.only(left: 9),
-                              child: ElevatedButton.icon(
-                                icon: const Icon(
-                                  Icons.refresh,
-                                  size: 20,
-                                ),
-                                label: const Text(
-                                  'Refresh',
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                onPressed: refresh,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  Text(
+                    "List User",
+                    style: TextStyle(
+                        fontSize: (Responsive.isDesktop(context)) ? 35 : 20,
+                        fontWeight: FontWeight.w700),
                   ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 38,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 18),
+                        child: ElevatedButton.icon(
+                          icon: const Icon(
+                            Icons.add,
+                            size: 20,
+                          ),
+                          label: const Text(
+                            'Baru',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          onPressed: () => detailData(''),
+                        ),
+                      ),
+                      Container(
+                        height: 38,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 9),
+                        child: ElevatedButton.icon(
+                          icon: const Icon(
+                            Icons.refresh,
+                            size: 20,
+                          ),
+                          label: const Text(
+                            'Refresh',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          onPressed: refresh,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
 
-                  Container(
-                      width: (Responsive.isDesktop(context))
-                          ? SizeConfig.screenWidth * 0.4
-                          : SizeConfig.screenWidth * 0.2,
+            /// Search Bar
+            Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 18, top: 8),
+              child: Tooltip(
+                message: "Cari / Filter Data",
+                child: InkWell(
+                  onTap: () async {
+                    var value = await _showSearchDialogBuilder(
+                        context, "Cari / Filter Data");
+                    if (value == null)
+                      {
+                        log('NULL');
+                      }
+                    else
+                      {
+                        if (value is Map)
+                          {
+                            log(value.keys.map((e) => '$e -> ${value[e]}').toList().join(','));
+                          }
+                      }
+                  },
+                  borderRadius: BorderRadius.circular(18),
+                  splashColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                  child: Container(
+                      width: 120,
                       padding: const EdgeInsets.symmetric(horizontal: 9),
                       decoration: BoxDecoration(
                           border:
@@ -364,29 +428,15 @@ class _DesktopState extends State<Desktop> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          const SizedBox(
+                            width: 8,
+                          ),
                           const Text('Cari'),
                           IconButton(
                               onPressed: () {}, icon: const Icon(Icons.search))
                         ],
-                      ))
-
-                  // Container(
-                  //   width: (Responsive.isDesktop(context))
-                  //       ? SizeConfig.screenWidth * 0.4
-                  //       : SizeConfig.screenWidth * 0.2,
-                  //   padding: const EdgeInsets.symmetric(horizontal: 18),
-                  //   child: TextField(
-                  //     decoration: const InputDecoration(
-                  //       labelText: 'Search',
-                  //       border: OutlineInputBorder(),
-                  //     ),
-                  //     onSubmitted: (String? value) {
-                  //       log(value ?? 'Cari');
-                  //     },
-                  //
-                  //   ),
-                  // )
-                ],
+                      )),
+                ),
               ),
             ),
 
